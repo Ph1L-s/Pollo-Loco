@@ -1,0 +1,15 @@
+{
+    "game": {
+        "title": "Pollo Loco",
+        "width": 800,
+        "height": 600,
+        "fps": 60
+    },
+    "player": {
+        "speed": 200,
+        "jumpPower": 300
+    },
+    "physics": {
+        "gravity": 800
+    }
+}
