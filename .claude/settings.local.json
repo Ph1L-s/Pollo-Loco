@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rmdir:*)",
+      "Bash(del \"C:\\Users\\phill\\Documents\\GitHub\\LogoPollo\\main\\Pollo-Loco\\index.html\")",
+      "Bash(rm:*)",
+      "Bash(mkdir:*)"
+    ],
+    "deny": []
+  }
+}
