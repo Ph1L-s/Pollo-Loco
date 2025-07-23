@@ -8,15 +8,17 @@ class Cloud extends MovebleObject {
     constructor(){
         super().loadImage('assets/images/backgrounds/layers/4_clouds/1.png');
         //this.img.src = path;
+        this.animate();
+    }
 
+
+    animate(){
+        this.moveLeft();
+        
     }
 
     moveRight(){
         console.log('Moving right');
-    }
-
-    moveLeft(){
-        console.log('Moving left');
     }
 
 }
