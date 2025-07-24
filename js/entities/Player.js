@@ -2,6 +2,11 @@ class Player extends MovebleObject {
     x = 100;
     y = 150;
     height = 300;
+    speed = 15;
+    world;
+    currentImage = 0;
+    animationInterval = null; // <- Wichtig: Referenz auf das laufende Animation-Interval
+
     IMAGES_WALKING_PLAYER = [
         'assets/images/sprites/2_character_pepe/2_walk/W-21.png',
         'assets/images/sprites/2_character_pepe/2_walk/W-22.png',
@@ -11,27 +16,53 @@ class Player extends MovebleObject {
         'assets/images/sprites/2_character_pepe/2_walk/W-26.png'
     ];
 
-    currentImage = 0;
-
-
     constructor(){
-        super().loadImage('assets/images/sprites/2_character_pepe/2_walk/W-21.png');
+        super().loadImage(this.IMAGES_WALKING_PLAYER[0]);
         this.loadImages(this.IMAGES_WALKING_PLAYER);
-        this.animate();
+        this.startMovementLoop();
     }
-    animate(){
- 
+
+    startMovementLoop() {
+        // Diese Schleife läuft immer und prüft den Input
         setInterval(() => {
-            let indexPlayer = this.currentImage % this.IMAGES_WALKING_PLAYER.length;
-            let path = this.IMAGES_WALKING_PLAYER[indexPlayer];
+            let moving = false;
+
+            if (this.world.input.RIGHT) {
+                this.x += this.speed;
+                this.otherDirection = false;
+                moving = true;
+            }
+            if (this.world.input.LEFT) {
+                this.x -= this.speed;
+                this.otherDirection = true;
+                moving = true;
+            }
+            
+            if (moving && !this.animationInterval) {
+            
+                this.startAnimation();
+            } else if (!moving && this.animationInterval) {
+                
+                this.stopAnimation();
+            }
+            this.world.camera_x = -this.x;
+        }, 1000 / 60);
+    }
+
+    startAnimation() {
+        this.animationInterval = setInterval(() => {
+            let index = this.currentImage % this.IMAGES_WALKING_PLAYER.length;
+            let path = this.IMAGES_WALKING_PLAYER[index];
             this.img = this.imageCache[path];
             this.currentImage++;
         }, 100);
-
-
-        
-
     }
 
+    stopAnimation() {
+        clearInterval(this.animationInterval);
+        this.animationInterval = null;
+    }
+
+    
     jump(){}
 }

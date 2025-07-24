@@ -1,5 +1,6 @@
 let canvas;
 let world;
+let input = new Input();
 
 // Make sure world is immediately accessible
 window.world = null;
@@ -11,7 +12,7 @@ function init() {
     try {
         canvas = document.getElementById('gameCanvas');
         console.log('canvas:', canvas);
-        world = new World(canvas);
+        world = new World(canvas, input);
         console.log('world created:', world);
         
         // Make world accessible globally
@@ -30,4 +31,20 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!window.world) {
         init();
     }
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.keyCode === 68 || event.keyCode === 39) input.RIGHT = true;
+    if (event.keyCode === 65 || event.keyCode === 37) input.LEFT = true;
+    if (event.keyCode === 83 || event.keyCode === 40) input.DOWN = true;
+    if (event.keyCode === 87 || event.keyCode === 38) input.UP = true;
+    if (event.keyCode === 32) input.SPACE = true;
+});
+
+document.addEventListener('keyup', (event) => {
+    if (event.keyCode === 68 || event.keyCode === 39) input.RIGHT = false;
+    if (event.keyCode === 65 || event.keyCode === 37) input.LEFT = false;
+    if (event.keyCode === 83 || event.keyCode === 40) input.DOWN = false;
+    if (event.keyCode === 87 || event.keyCode === 38) input.UP = false;
+    if (event.keyCode === 32) input.SPACE = false;
 });
