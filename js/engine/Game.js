@@ -12,7 +12,9 @@ function init() {
     try {
         canvas = document.getElementById('gameCanvas');
         console.log('canvas:', canvas);
-        world = new World(canvas, input);
+
+        // input ist bereits oben global initialisiert!
+        world = new World(canvas, input, level_1);
         console.log('world created:', world);
         
         // Make world accessible globally
@@ -24,6 +26,7 @@ function init() {
         console.error('Error in init():', error);
     }
 }
+
 
 // Also try calling init directly when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {

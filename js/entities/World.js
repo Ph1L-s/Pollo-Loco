@@ -1,50 +1,28 @@
 class World {
 
     character = new Player();
-    enemies = [
-        new Enemy(),
-        new Enemy(),
-        new Enemy(),
-    ];
-
-    clouds = [
-        new Cloud()
-    ];
-
-    backgroundObjects = [
-        new BackgroundObject('assets/images/backgrounds/layers/air.png', 0),
-        new BackgroundObject('assets/images/backgrounds/layers/3_third_layer/1.png', 0),
-        new BackgroundObject('assets/images/backgrounds/layers/2_second_layer/1.png', 0),
-        new BackgroundObject('assets/images/backgrounds/layers/1_first_layer/1.png', 0),
-        
-        new BackgroundObject('assets/images/backgrounds/layers/air.png', 720),
-        new BackgroundObject('assets/images/backgrounds/layers/3_third_layer/2.png', 720),
-        new BackgroundObject('assets/images/backgrounds/layers/2_second_layer/2.png', 720),
-        new BackgroundObject('assets/images/backgrounds/layers/1_first_layer/2.png', 720),
-
-        new BackgroundObject('assets/images/backgrounds/layers/air.png', 1440),
-        new BackgroundObject('assets/images/backgrounds/layers/3_third_layer/1.png', 1440),
-        new BackgroundObject('assets/images/backgrounds/layers/2_second_layer/1.png', 1440),
-        new BackgroundObject('assets/images/backgrounds/layers/1_first_layer/1.png', 1440),
-
-        new BackgroundObject('assets/images/backgrounds/layers/air.png', 2160),
-        new BackgroundObject('assets/images/backgrounds/layers/3_third_layer/2.png', 2160),
-        new BackgroundObject('assets/images/backgrounds/layers/2_second_layer/2.png', 2160),
-        new BackgroundObject('assets/images/backgrounds/layers/1_first_layer/2.png', 2160),
-        
-    ];
-
+    enemies = level_1.enemies;
+    clouds = level_1.clouds;
+    backgroundObjects = level_1.backgroundObjects;
+    level = level_1;
     canvas;
     ctx;
     input; 
     camera_x = 0;
-    constructor(canvas, input) {
+    constructor(canvas, input, level) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.input = input;
+
+        this.level = level;
+        this.enemies = level.enemies;
+        this.clouds = level.clouds;
+        this.backgroundObjects = level.backgroundObjects;
+
         this.draw();
         this.setWorld();
     }
+
 
     setWorld(){
         this.character.world = this;

@@ -27,12 +27,12 @@ class Player extends MovebleObject {
         setInterval(() => {
             let moving = false;
 
-            if (this.world.input.RIGHT) {
+            if (this.world.input.RIGHT && this.x < this.world.level.level_end_x) {
                 this.x += this.speed;
                 this.otherDirection = false;
                 moving = true;
             }
-            if (this.world.input.LEFT) {
+            if (this.world.input.LEFT && this.x > 100) {
                 this.x -= this.speed;
                 this.otherDirection = true;
                 moving = true;
@@ -45,7 +45,7 @@ class Player extends MovebleObject {
                 
                 this.stopAnimation();
             }
-            this.world.camera_x = -this.x;
+            this.world.camera_x = -this.x +100;
         }, 1000 / 60);
     }
 
