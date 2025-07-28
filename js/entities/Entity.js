@@ -7,7 +7,9 @@ class MovebleObject {
     imageCache = {};
     speed = 0.15;
     otherDirection = false;
-    
+    animationInterval = null;
+    currentImage = 0;
+
     loadImage(path){
         this.img = new Image();
         this.img.src = path;
@@ -19,6 +21,23 @@ class MovebleObject {
             img.src = path;
             this.imageCache[path] = img;
         });
+    }
+
+    playAnimation(images, interval = 100) {
+        this.stopAnimation();
+        this.animationInterval = setInterval(() => {
+            let index = this.currentImage % images.length;
+            let path = images[index];
+            this.img = this.imageCache[path];
+            this.currentImage++;
+        }, interval);
+    }
+
+    stopAnimation() {
+        if (this.animationInterval) {
+            clearInterval(this.animationInterval);
+            this.animationInterval = null;
+        }
     }
 
     moveRight(){

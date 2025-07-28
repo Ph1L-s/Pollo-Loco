@@ -1,11 +1,9 @@
 class Player extends MovebleObject {
     x = 100;
-    y = 150;
+    y = 60;
     height = 300;
     speed = 4;
     world;
-    currentImage = 0;
-    animationInterval = null;
 
     IMAGES_WALKING_PLAYER = [
         'assets/images/sprites/2_character_pepe/2_walk/W-21.png',
@@ -23,7 +21,6 @@ class Player extends MovebleObject {
     }
 
     startMovementLoop() {
-        // Diese Schleife läuft immer und prüft den Input
         setInterval(() => {
             let moving = false;
 
@@ -37,32 +34,14 @@ class Player extends MovebleObject {
                 this.otherDirection = true;
                 moving = true;
             }
-            
+
             if (moving && !this.animationInterval) {
-            
-                this.startAnimation();
+                this.playAnimation(this.IMAGES_WALKING_PLAYER, 100);
             } else if (!moving && this.animationInterval) {
-                
                 this.stopAnimation();
             }
-            this.world.camera_x = -this.x +100;
+
+            this.world.camera_x = -this.x + 100;
         }, 1000 / 144);
     }
-
-    startAnimation() {
-        this.animationInterval = setInterval(() => {
-            let index = this.currentImage % this.IMAGES_WALKING_PLAYER.length;
-            let path = this.IMAGES_WALKING_PLAYER[index];
-            this.img = this.imageCache[path];
-            this.currentImage++;
-        }, 100);
-    }
-
-    stopAnimation() {
-        clearInterval(this.animationInterval);
-        this.animationInterval = null;
-    }
-
-    
-    jump(){}
 }

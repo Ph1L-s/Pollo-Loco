@@ -1,5 +1,12 @@
 class BossEntity extends MovebleObject {
 
+    height = 300;
+    width = 300;
+    y = 160;
+    x = 700;
+
+
+
 
     IMAGES_WALKING_ENEMY = [
         'assets/images/sprites/4_enemie_boss_chicken/2_alert/G5.png',
@@ -13,6 +20,11 @@ class BossEntity extends MovebleObject {
     ];
 
     constructor() {
-        
+        super(); 
+
+        this.loadImage(this.IMAGES_WALKING_ENEMY[0]);
+        this.loadImages(this.IMAGES_WALKING_ENEMY);
+
+        this.playAnimation(this.IMAGES_WALKING_ENEMY, 120);
     }
 }

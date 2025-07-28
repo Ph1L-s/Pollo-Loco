@@ -11,7 +11,6 @@ class Cloud extends MovebleObject {
         this.animate();
     }
 
-
     animate(){
         this.moveLeft();
         
