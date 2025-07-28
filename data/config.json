@@ -10,6 +10,6 @@
         "jumpPower": 300
     },
     "physics": {
-        "gravity": 800
+        "gravity": 400
     }
 }

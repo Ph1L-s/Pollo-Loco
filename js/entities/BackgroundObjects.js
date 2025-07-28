@@ -1,4 +1,4 @@
-class BackgroundObject extends MovebleObject {
+class BackgroundObject extends ObjectEntity {
     width = 720;
     height = 480;
 

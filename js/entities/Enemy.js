@@ -1,6 +1,6 @@
-class Enemy extends MovebleObject {
+class Enemy extends ObjectEntity {
     x = 100;
-    y = 390;
+    y = 360;
     height = 50;
     width = 50;
 
@@ -16,7 +16,13 @@ class Enemy extends MovebleObject {
 
         this.x = 200 + Math.random() * 500;
         this.speed = 0.15 + Math.random() * 0.35;
-        this.moveLeft();
+        this.startMovement();
         this.playAnimation(this.IMAGES_WALKING_ENEMY, 90);
+    }
+
+    startMovement() {
+        setInterval(() => {
+            this.moveLeft();
+        }, 1000 / 60);
     }
 }
