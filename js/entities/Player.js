@@ -2,10 +2,10 @@ class Player extends MovebleObject {
     x = 100;
     y = 150;
     height = 300;
-    speed = 15;
+    speed = 4;
     world;
     currentImage = 0;
-    animationInterval = null; // <- Wichtig: Referenz auf das laufende Animation-Interval
+    animationInterval = null;
 
     IMAGES_WALKING_PLAYER = [
         'assets/images/sprites/2_character_pepe/2_walk/W-21.png',
@@ -46,7 +46,7 @@ class Player extends MovebleObject {
                 this.stopAnimation();
             }
             this.world.camera_x = -this.x +100;
-        }, 1000 / 60);
+        }, 1000 / 144);
     }
 
     startAnimation() {
