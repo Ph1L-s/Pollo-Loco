@@ -15,7 +15,7 @@ class ObjectEntity {
     currentAnimationSet = null;
     showCollision = false;
     energy = 100;
-
+    lastHit = 0;
 
     shouldShowCollision() {
         return this instanceof Player || 
@@ -51,13 +51,22 @@ class ObjectEntity {
         this.energy -= 5;
         if (this.energy <= 0) {
             this.energy = 0;
-            console.log('Player dead!');
+            console.log('player dead!');
+        } else {
+            this.lastHit = new Date().getTime();
         }
     }
+
+    isHurt() {
+    let timepassed = new Date().getTime() - this.lastHit;
+    return timepassed < 500; 
+}
 
     isDead(){
         return this.energy == 0;
     }
+
+
 
     applyGravity() {
         setInterval(() => {

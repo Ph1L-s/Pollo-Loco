@@ -37,11 +37,18 @@ class Player extends ObjectEntity {
         'assets/images/sprites/2_character_pepe/5_dead/D-57.png'
     ];
 
+    IMAGES_HURT_PLAYER = [
+        'assets/images/sprites/2_character_pepe/4_hurt/H-41.png',
+        'assets/images/sprites/2_character_pepe/4_hurt/H-42.png',
+        'assets/images/sprites/2_character_pepe/4_hurt/H-43.png'
+    ]
+    
     constructor() {
         super().loadImage(this.IMAGES_WALKING_PLAYER[0]); 
         this.loadImages(this.IMAGES_WALKING_PLAYER);
         this.loadImages(this.IMAGES_JUMPING_PLAYER);
         this.loadImages(this.IMAGES_DEAD_PLAYER);
+        this.loadImages(this.IMAGES_HURT_PLAYER);
         this.applyGravity();
         setTimeout(() => this.animate(), 50);
     }
@@ -50,45 +57,52 @@ class Player extends ObjectEntity {
         setInterval(() => {
             if (!this.world || !this.world.input) return;
             
-            
+            // 1. Tod hat höchste Priorität
             if (this.isDead()) {
                 if (this.currentAnimationSet !== 'dead') {
                     this.playAnimation(this.IMAGES_DEAD_PLAYER, 200);
                     this.currentAnimationSet = 'dead';
                 }
-                return; 
+                return;
             }
-
+            
+            // 2. Bewegungseingaben verarbeiten
             this.moving = false;
-
             if (this.world.input.RIGHT && this.x < this.world.level.level_end_x) {
                 this.moveRight();
                 this.moving = true;
             }
-
             if (this.world.input.LEFT && this.x > 120) {
                 this.moveLeft();
                 this.moving = true;
             }
-
             if ((this.world.input.SPACE || this.world.input.UP) && !this.isAbouveGround()) {
                 this.speedY = 14;
             }
 
-            if (this.isAbouveGround()) {
+            // 3. Animationen steuern
+            if (this.isHurt()) {
+                if (this.currentAnimationSet !== 'hurt') {
+                    this.playAnimation(this.IMAGES_HURT_PLAYER, 200);
+                    this.currentAnimationSet = 'hurt';
+                }
+            } 
+            else if (this.isAbouveGround()) {
                 if (this.currentAnimationSet !== 'jump') {
                     this.playAnimation(this.IMAGES_JUMPING_PLAYER, 120);
                     this.currentAnimationSet = 'jump';
                 }
-            } else if (this.moving) {
+            } 
+            else if (this.moving) {
                 if (this.currentAnimationSet !== 'walk') {
                     this.playAnimation(this.IMAGES_WALKING_PLAYER, 120);
                     this.currentAnimationSet = 'walk';
                 }
-            } else {
+            } 
+            else {
                 this.stopAnimation();
                 this.currentAnimationSet = null;
-                this.loadImage(this.IMAGES_WALKING_PLAYER[0]); 
+                this.loadImage(this.IMAGES_WALKING_PLAYER[0]);
             }
 
             this.world.camera_x = -this.x + 100;
