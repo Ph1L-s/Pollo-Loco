@@ -41,6 +41,7 @@ document.addEventListener('keydown', (event) => {
     if (event.keyCode === 65 || event.keyCode === 37) input.LEFT = true;
     if (event.keyCode === 83 || event.keyCode === 40) input.DOWN = true;
     if (event.keyCode === 87 || event.keyCode === 38) input.UP = true;
+    if (event.keyCode === 70) input.F = true;
     if (event.keyCode === 32) input.SPACE = true;
 });
 
@@ -49,5 +50,6 @@ document.addEventListener('keyup', (event) => {
     if (event.keyCode === 65 || event.keyCode === 37) input.LEFT = false;
     if (event.keyCode === 83 || event.keyCode === 40) input.DOWN = false;
     if (event.keyCode === 87 || event.keyCode === 38) input.UP = false;
+    if (event.keyCode === 70) input.F = false;
     if (event.keyCode === 32) input.SPACE = false;
 });

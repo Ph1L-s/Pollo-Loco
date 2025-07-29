@@ -4,7 +4,7 @@ class Input {
     UP = false;
     DOWN = false;
     SPACE = false;
-
+    F = false;
     constructor(){
 
 

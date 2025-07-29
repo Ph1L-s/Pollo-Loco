@@ -1,19 +1,10 @@
-class ObjectEntity {
-    x = 120;
-    y = 120;
-    img;
-    height = 150;
-    width = 100;
-    imageCache = {};
+class ObjectEntity extends DrawableObjects {
     speed = 0.15;
-    moving = false;
     otherDirection = false;
     animationInterval = null;
-    currentImage = 0;
     speedY = 0;
     acceleration = 0.5;
     currentAnimationSet = null;
-    showCollision = false;
     energy = 100;
     lastHit = 0;
 
@@ -38,7 +29,7 @@ class ObjectEntity {
         }
     }
 
-    isColliding(mo){
+    isColliding(mo) {
         return this.x + this.width > mo.x &&
             this.y + this.height > mo.y &&
             this.x < mo.x &&
@@ -58,44 +49,44 @@ class ObjectEntity {
     }
 
     isHurt() {
-    let timepassed = new Date().getTime() - this.lastHit;
-    return timepassed < 500; 
-}
+        let timepassed = new Date().getTime() - this.lastHit;
+        return timepassed < 500; 
+    }
 
-    isDead(){
+    isDead() {
         return this.energy == 0;
     }
 
-
-
     applyGravity() {
         setInterval(() => {
-            if (this.isAbouveGround() || this.speedY > 0) {
+            if (this.isAboveGround() || this.speedY > 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
-                if (this.y > 120) {
-                    this.y = 120;
+                
+                let groundLevel = 120; 
+                if (this instanceof ThrowableObject) {
+                    groundLevel = 380; 
+                }
+                
+                if (this.y > groundLevel) {
+                    this.y = groundLevel;
                     this.speedY = 0;
                 }
             }
         }, 1000 / 144);
     }
 
-    isAbouveGround() {
-        return this.y < 120;
+    isAboveGround() {
+        if (this instanceof ThrowableObject) {
+            return true;
+        } else {
+            return this.y < 120;
+        }
     }
 
     loadImage(path) {
         this.img = new Image();
         this.img.src = path;
-    }
-
-    loadImages(arr) {
-        arr.forEach(path => {
-            let img = new Image();
-            img.src = path;
-            this.imageCache[path] = img;
-        });
     }
 
     playAnimation(images, interval = 100) {
@@ -129,3 +120,5 @@ class ObjectEntity {
         this.moving = true;
     }
 }
+
+window.ObjectEntity = ObjectEntity;

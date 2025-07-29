@@ -76,7 +76,7 @@ class Player extends ObjectEntity {
                 this.moveLeft();
                 this.moving = true;
             }
-            if ((this.world.input.SPACE || this.world.input.UP) && !this.isAbouveGround()) {
+            if ((this.world.input.SPACE || this.world.input.UP) && !this.isAboveGround()) {
                 this.speedY = 14;
             }
 
@@ -87,7 +87,7 @@ class Player extends ObjectEntity {
                     this.currentAnimationSet = 'hurt';
                 }
             } 
-            else if (this.isAbouveGround()) {
+            else if (this.isAboveGround()) {
                 if (this.currentAnimationSet !== 'jump') {
                     this.playAnimation(this.IMAGES_JUMPING_PLAYER, 120);
                     this.currentAnimationSet = 'jump';

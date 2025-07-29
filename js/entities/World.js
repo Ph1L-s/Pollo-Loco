@@ -7,40 +7,61 @@ class World {
     canvas;
     ctx;
     input;
-    camera_x = 0;
+    camera_x = 0;   
+    statusBar = new StatusBar();
+    throwableObjects = [];
 
     constructor(canvas, input, level) {
         this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.input = input;
         this.level = level;
-        this.enemies = level.enemies;
-        this.clouds = level.clouds;
-        this.backgroundObjects = level.backgroundObjects;
+        this.enemies = level.enemies || [];
+        this.clouds = level.clouds || [];
+        this.throwableObjects = [];
+        this.backgroundObjects = level.backgroundObjects || [];
         this.character = new Player();
         this.setWorld();
         this.toggleCollisions(true, [Player, Enemy, BossEntity]);
+        this.throwableObjects.push(new ThrowableObject()); 
         this.draw();
         this.checkCollisions();
+        this.run();
     }
 
     setWorld() {
         this.character.world = this;
     }
 
-    checkCollisions() {
+    run() {
         setInterval(() => {
             if (!this.enemies || this.character.isDead()) return;
-            
-            this.enemies.forEach((enemy) => {
-                if (this.character.isColliding(enemy)) {
-                    this.character.hit();
-                    console.log('Collision with Enemy, energy:', this.character.energy);
-                }
-            });
-        }, 200);
+            this.checkCollisions();
+            this.checkThrowObjects();
+        }, 144);
     }
 
+    checkThrowObjects(){
+        if(this.input.F){
+            let bottle = new ThrowableObject(
+                this.character.x, 
+                this.character.y, 
+                this.character.otherDirection 
+            );
+            this.throwableObjects.push(bottle);
+            this.input.F = false; 
+        }
+    }
+
+    checkCollisions(){
+        this.enemies.forEach((enemy) => {
+            if (this.character.isColliding(enemy)) {
+                this.character.hit();
+                this.statusBar.setPercentage(this.character.energy);
+                console.log('Collision with Enemy, energy:', this.character.energy);
+            }
+        });
+    }
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -51,6 +72,8 @@ class World {
         this.addObjectsToMap(this.enemies);
         this.ctx.translate(-this.camera_x, 0);
         requestAnimationFrame(() => this.draw());
+        this.addToMap(this.statusBar);
+        this.addObjectsToMap(this.throwableObjects); 
     }
 
     toggleCollisions(show, types = []) {
@@ -74,6 +97,10 @@ class World {
     }
 
     addToMap(mo) {
+        if (!mo.img || !mo.img.complete) {
+            return; 
+        }
+
         if (mo.otherDirection) {
             this.ctx.save();
             this.ctx.translate(mo.x + mo.width, 0);
@@ -83,6 +110,9 @@ class World {
         } else {
             this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
         }
-        mo.drawCollision(this.ctx);
+        
+        if (mo.drawCollision) {
+            mo.drawCollision(this.ctx);
+        }
     }
 }
