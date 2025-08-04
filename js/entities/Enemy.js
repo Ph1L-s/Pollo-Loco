@@ -23,6 +23,6 @@ class Enemy extends ObjectEntity {
     startMovement() {
         setInterval(() => {
             this.moveLeft();
-        }, 1000 / 60);
+        }, 1000 / 30);
     }
 }

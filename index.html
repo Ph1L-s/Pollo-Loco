@@ -12,16 +12,26 @@
     <script src="js/systems/DrawableObjects.js"></script>
     <script src="js/entities/ObjectEntity.js"></script>
     <script src="js/entities/ThrowableObject.js"></script>
+    
     <!-- Utils -->
     <script src="js/utils/Vector2.js"></script>
     <script src="js/utils/Utils.js"></script>
     <script src="js/utils/Config.js"></script>
+
+    <!-- Systems -->
+    <script src="js/systems/CollisionManager.js"></script>
+    <script src="js/systems/StatusBar.js"></script>
+    <script src="js/systems/Physics.js"></script>
+    <script src="js/systems/Renderer.js"></script>
+    <script src="js/systems/Audio.js"></script>
 
     <!-- Engine Systems -->
     <script src="js/engine/Time.js"></script>
     <script src="js/engine/Input.js"></script>
     <script src="js/engine/Camera.js"></script>
     <script src="js/engine/Scene.js"></script>
+    <script src="js/engine/AnimationManager.js"></script>
+    <script src="js/engine/GameLoop.js"></script>
 
     <!-- Game Objects -->
     <script src="js/entities/Player.js"></script>
@@ -31,11 +41,6 @@
     <script src="js/entities/WorldObjects.js"></script>
     <script src="js/entities/Projectile.js"></script>
 
-    <!-- Systems -->
-    <script src="js/systems/StatusBar.js"></script>
-    <script src="js/systems/Physics.js"></script>
-    <script src="js/systems/Renderer.js"></script>
-    <script src="js/systems/Audio.js"></script>
 
     <!-- Levels -->
     <script src="js/entities/Level.js"></script>
@@ -50,8 +55,15 @@
     <!-- Main Game -->
     <script src="js/engine/Game.js"></script>   
 
-    <canvas id="gameCanvas" width="720" height="480"></canvas>
-    
+
     <h1>El Pollo Loco</h1>
+    
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="720" height="480"></canvas>
+        <div id="startScreen">
+            <button id="startButton">START</button>
+        </div>
+    </div>
+    
 </body>
 </html>

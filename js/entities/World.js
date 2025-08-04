@@ -1,31 +1,43 @@
 class World {
-    character = new Player();
+    character;
     enemies = [];
     clouds = [];
     backgroundObjects = [];
     level = null;
     canvas;
-    ctx;
     input;
-    camera_x = 0;   
-    statusBar = new StatusBar();
+    statusBar;
     throwableObjects = [];
+    renderer;
+    collisionManager;
+    camera_x = 0;
 
     constructor(canvas, input, level) {
-        this.ctx = canvas.getContext('2d');
         this.canvas = canvas;
         this.input = input;
         this.level = level;
+        
+        // initialize objects when world started
+        this.character = new Player();
+        this.statusBar = new StatusBar();
         this.enemies = level.enemies || [];
         this.clouds = level.clouds || [];
         this.throwableObjects = [];
         this.backgroundObjects = level.backgroundObjects || [];
         this.character = new Player();
+        
+        // initialize systems
+        this.renderer = new Renderer(canvas);
+        this.collisionManager = new CollisionManager();
+        
         this.setWorld();
-        this.toggleCollisions(true, [Player, Enemy, BossEntity]);
+        const collisionObjects = [this.character];
+        for(let enemy of this.enemies) {
+            collisionObjects.push(enemy);
+        }
+        this.collisionManager.toggleCollisions(collisionObjects, true, [Player, Enemy, BossEntity]);
         this.throwableObjects.push(new ThrowableObject()); 
         this.draw();
-        this.checkCollisions();
         this.run();
     }
 
@@ -54,65 +66,39 @@ class World {
     }
 
     checkCollisions(){
-        this.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy)) {
-                this.character.hit();
-                this.statusBar.setPercentage(this.character.energy);
-                console.log('Collision with Enemy, energy:', this.character.energy);
-            }
-        });
+        this.collisionManager.checkCollisions(this.character, this.enemies, this.throwableObjects);
+        this.statusBar.setPercentage(this.character.energy);
     }
 
     draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.translate(this.camera_x, 0);
-        this.addObjectsToMap(this.backgroundObjects);
-        this.addObjectsToMap(this.clouds);
-        this.addToMap(this.character);
-        this.addObjectsToMap(this.enemies);
-        this.ctx.translate(-this.camera_x, 0);
+        if (window.gameOver) {
+            console.log('World draw stopped - game over');
+            return;
+        }
+        
+        this.renderer.setCameraX(this.camera_x);
+        this.renderer.render(
+            this.backgroundObjects,
+            this.clouds,
+            this.character,
+            this.enemies,
+            this.throwableObjects,
+            this.statusBar
+        );
         requestAnimationFrame(() => this.draw());
-        this.addToMap(this.statusBar);
-        this.addObjectsToMap(this.throwableObjects); 
     }
 
     toggleCollisions(show, types = []) {
-        const allObjects = [
-            this.character,
-            ...this.enemies,
-            ...this.clouds,
-            ...this.backgroundObjects
-        ];
-        allObjects.forEach(obj => {
-            if (types.length === 0 || types.some(type => obj instanceof type)) {
-                obj.toggleCollision(show);
-            }
-        });
-    }
-
-    addObjectsToMap(objects) {
-        objects.forEach(o => {
-            this.addToMap(o);
-        });
-    }
-
-    addToMap(mo) {
-        if (!mo.img || !mo.img.complete) {
-            return; 
+        const allObjects = [this.character];
+        for(let enemy of this.enemies) {
+            allObjects.push(enemy);
         }
-
-        if (mo.otherDirection) {
-            this.ctx.save();
-            this.ctx.translate(mo.x + mo.width, 0);
-            this.ctx.scale(-1, 1);
-            this.ctx.drawImage(mo.img, 0, mo.y, mo.width, mo.height);
-            this.ctx.restore();
-        } else {
-            this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
+        for(let cloud of this.clouds) {
+            allObjects.push(cloud);
         }
-        
-        if (mo.drawCollision) {
-            mo.drawCollision(this.ctx);
+        for(let bg of this.backgroundObjects) {
+            allObjects.push(bg);
         }
+        this.collisionManager.toggleCollisions(allObjects, show, types);
     }
 }

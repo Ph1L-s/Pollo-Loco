@@ -90,11 +90,23 @@ class ObjectEntity extends DrawableObjects {
     }
 
     playAnimation(images, interval = 100) {
+        // Clean log only when animation starts
+        if (this instanceof Player) {
+            console.log('Player animation:', images.length, 'frames');
+        } else if (this instanceof Enemy || this instanceof BossEntity) {
+            console.log(`${this.constructor.name} animation started`);
+        }
+        
         this.stopAnimation();
+        this.currentImage = 0; // Reset animation to start from frame 0
         this.animationInterval = setInterval(() => {
             let index = this.currentImage % images.length;
             let path = images[index];
-            this.img = this.imageCache[path];
+            if (this.imageCache[path]) {
+                this.img = this.imageCache[path];
+            } else {
+                console.log('Missing from cache:', path);
+            }
             this.currentImage++;
         }, interval);
     }

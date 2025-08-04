@@ -1,39 +1,112 @@
 let canvas;
 let world;
 let input = new Input();
+let gameStarted = false;
+let gameOver = false;
 
-// Make sure world is immediately accessible
-window.world = null;
+const GAME_OVER_IMAGE = [
+    'assets/images/ui/9_intro_outro_screens/game_over/game over.png'
+];
 
 console.log('Game.js loaded');
 
-function init() {
-    console.log('init() called');
-    try {
-        canvas = document.getElementById('gameCanvas');
-        console.log('canvas:', canvas);
+function startGame() {
+    if (gameStarted) return;
+    
+    console.log('Starting game...');
+    
 
-        // input ist bereits oben global initialisiert!
-        world = new World(canvas, input, level_1);
-        console.log('world created:', world);
-        
-        // Make world accessible globally
-        window.world = world;
-        console.log('window.world set:', window.world);
+    document.getElementById('startScreen').style.display = 'none';
+    
 
-        console.log('my Character is', world.character);
-    } catch (error) {
-        console.error('Error in init():', error);
-    }
+    document.getElementById('gameCanvas').style.filter = 'none';
+    
+    gameOver = false;
+    window.gameOver = false;
+
+    canvas = document.getElementById('gameCanvas');
+    world = new World(canvas, input, createLevel1());
+    window.world = world;
+    
+    gameStarted = true;
+    console.log('Game started!');
 }
 
+function showStartScreen() {
+    canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    ctx.fillStyle = '#0c159ccc';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
 
-// Also try calling init directly when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOMContentLoaded fired');
-    if (!window.world) {
-        init();
+function showGameOver() {
+    console.log('Game Over!');
+    console.log('GAME_OVER_IMAGE available?', typeof GAME_OVER_IMAGE);
+    
+    gameOver = true;
+    window.gameOver = true;
+    
+    if (world) {
+        if (world.character) {
+            world.character.stopAnimation();
+        }
+        if (world.enemies) {
+            world.enemies.forEach(enemy => enemy.stopAnimation());
+        }
+        world = null;
+        window.world = null;
     }
+    
+    canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    console.log('Canvas:', canvas);
+    
+    ctx.fillStyle = 'hsla(0, 0%, 0%, 0.001)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    console.log('Black background drawn');
+    
+    const gameOverImg = new Image();
+    gameOverImg.onload = function() {
+        console.log('Game Over image loaded:', gameOverImg.width, 'x', gameOverImg.height);
+        
+        const canvasRatio = canvas.width / canvas.height;
+        const imageRatio = gameOverImg.width / gameOverImg.height;
+        
+        let drawWidth, drawHeight;
+        if (imageRatio > canvasRatio) {
+            drawWidth = canvas.width;
+            drawHeight = canvas.width / imageRatio;
+        } else {
+            drawHeight = canvas.height;
+            drawWidth = canvas.height * imageRatio;
+        }
+        
+        const x = (canvas.width - drawWidth) / 2;
+        const y = (canvas.height - drawHeight) / 2;
+        
+        ctx.drawImage(gameOverImg, x, y, drawWidth, drawHeight);
+        console.log('Game Over image drawn at:', x, y, 'size:', drawWidth, 'x', drawHeight);
+    };
+    gameOverImg.onerror = function() {
+        console.log('Failed to load Game Over image');
+    };
+    console.log('Loading image:', GAME_OVER_IMAGE[0]);
+    gameOverImg.src = GAME_OVER_IMAGE[0];
+}
+
+window.showGameOver = showGameOver;
+window.gameOver = gameOver;
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page loaded - showing start screen');
+    console.log('Current world state:', window.world);
+    
+    showStartScreen();
+    
+    const startButton = document.getElementById('startButton');
+    startButton.addEventListener('click', startGame);
 });
 
 document.addEventListener('keydown', (event) => {

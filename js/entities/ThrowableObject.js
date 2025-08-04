@@ -2,7 +2,7 @@ class ThrowableObject extends ObjectEntity {
     constructor(x, y, otherDirection) {
         super();
         this.x = x;
-        this.y = y;
+        this.y = 250;
         this.width = 40;
         this.height = 40;
         this.otherDirection = otherDirection; 
@@ -16,9 +16,9 @@ class ThrowableObject extends ObjectEntity {
         
         setInterval(() => {
             if (this.otherDirection) {
-                this.x -= 1;
+                this.x -= 15;
             } else {
-                this.x += 1;
+                this.x += 15;
             }
         }, 25);
     }
