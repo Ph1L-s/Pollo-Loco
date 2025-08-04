@@ -7,72 +7,72 @@ class Player extends ObjectEntity {
 
 
     IMAGES_DEFAULT_PLAYER = [
-        'assets/images/sprites/2_character_pepe/3_jump/J-31.png'
+        'assets/images/sprites/2_character_pepe/3_jump/j_31.png'
     ];
 
     IMAGES_WALKING_PLAYER = [
-        'assets/images/sprites/2_character_pepe/2_walk/W-21.png',
-        'assets/images/sprites/2_character_pepe/2_walk/W-22.png',
-        'assets/images/sprites/2_character_pepe/2_walk/W-23.png',
-        'assets/images/sprites/2_character_pepe/2_walk/W-24.png',
-        'assets/images/sprites/2_character_pepe/2_walk/W-25.png',
-        'assets/images/sprites/2_character_pepe/2_walk/W-26.png'
+        'assets/images/sprites/2_character_pepe/2_walk/w_21.png',
+        'assets/images/sprites/2_character_pepe/2_walk/w_22.png',
+        'assets/images/sprites/2_character_pepe/2_walk/w_23.png',
+        'assets/images/sprites/2_character_pepe/2_walk/w_24.png',
+        'assets/images/sprites/2_character_pepe/2_walk/w_25.png',
+        'assets/images/sprites/2_character_pepe/2_walk/w_26.png'
     ];
 
     IMAGES_JUMPING_PLAYER = [
-        'assets/images/sprites/2_character_pepe/3_jump/J-32.png',
-        'assets/images/sprites/2_character_pepe/3_jump/J-33.png',
-        'assets/images/sprites/2_character_pepe/3_jump/J-34.png',
-        'assets/images/sprites/2_character_pepe/3_jump/J-35.png',
-        'assets/images/sprites/2_character_pepe/3_jump/J-36.png',
-        'assets/images/sprites/2_character_pepe/3_jump/J-37.png',
-        'assets/images/sprites/2_character_pepe/3_jump/J-38.png',
-        'assets/images/sprites/2_character_pepe/3_jump/J-39.png'
+        'assets/images/sprites/2_character_pepe/3_jump/j_32.png',
+        'assets/images/sprites/2_character_pepe/3_jump/j_33.png',
+        'assets/images/sprites/2_character_pepe/3_jump/j_34.png',
+        'assets/images/sprites/2_character_pepe/3_jump/j_35.png',
+        'assets/images/sprites/2_character_pepe/3_jump/j_36.png',
+        'assets/images/sprites/2_character_pepe/3_jump/j_37.png',
+        'assets/images/sprites/2_character_pepe/3_jump/j_38.png',
+        'assets/images/sprites/2_character_pepe/3_jump/j_39.png'
     ];
 
     IMAGES_HURT_PLAYER = [
-        'assets/images/sprites/2_character_pepe/4_hurt/H-41.png',
-        'assets/images/sprites/2_character_pepe/4_hurt/H-42.png',
-        'assets/images/sprites/2_character_pepe/4_hurt/H-43.png'
+        'assets/images/sprites/2_character_pepe/4_hurt/h_41.png',
+        'assets/images/sprites/2_character_pepe/4_hurt/h_42.png',
+        'assets/images/sprites/2_character_pepe/4_hurt/h_43.png'
     ]
 
     IMAGES_IDL_SHORT_PLAYER = [
-        'assets/images/sprites/2_character_pepe/1_idle/idle/I-1.png',
-        'assets/images/sprites/2_character_pepe/1_idle/idle/I-2.png',
-        'assets/images/sprites/2_character_pepe/1_idle/idle/I-3.png',
-        'assets/images/sprites/2_character_pepe/1_idle/idle/I-3.png',
-        'assets/images/sprites/2_character_pepe/1_idle/idle/I-4.png',
-        'assets/images/sprites/2_character_pepe/1_idle/idle/I-5.png',
-        'assets/images/sprites/2_character_pepe/1_idle/idle/I-6.png',
-        'assets/images/sprites/2_character_pepe/1_idle/idle/I-7.png',
-        'assets/images/sprites/2_character_pepe/1_idle/idle/I-8.png',
-        'assets/images/sprites/2_character_pepe/1_idle/idle/I-9.png',
-        'assets/images/sprites/2_character_pepe/1_idle/idle/I-10.png'
+        'assets/images/sprites/2_character_pepe/1_idle/idle/i_1.png',
+        'assets/images/sprites/2_character_pepe/1_idle/idle/i_2.png',
+        'assets/images/sprites/2_character_pepe/1_idle/idle/i_3.png',
+        'assets/images/sprites/2_character_pepe/1_idle/idle/i_3.png',
+        'assets/images/sprites/2_character_pepe/1_idle/idle/i_4.png',
+        'assets/images/sprites/2_character_pepe/1_idle/idle/i_5.png',
+        'assets/images/sprites/2_character_pepe/1_idle/idle/i_6.png',
+        'assets/images/sprites/2_character_pepe/1_idle/idle/i_7.png',
+        'assets/images/sprites/2_character_pepe/1_idle/idle/i_8.png',
+        'assets/images/sprites/2_character_pepe/1_idle/idle/i_9.png',
+        'assets/images/sprites/2_character_pepe/1_idle/idle/i_10.png'
     ];
     
     IMAGES_IDL_LONG_PLAYER = [
-        'assets/images/sprites/2_character_pepe/1_idle/long_idle/I-11.png',
-        'assets/images/sprites/2_character_pepe/1_idle/long_idle/I-12.png',
-        'assets/images/sprites/2_character_pepe/1_idle/long_idle/I-13.png',
-        'assets/images/sprites/2_character_pepe/1_idle/long_idle/I-13.png',
-        'assets/images/sprites/2_character_pepe/1_idle/long_idle/I-14.png',
-        'assets/images/sprites/2_character_pepe/1_idle/long_idle/I-15.png',
-        'assets/images/sprites/2_character_pepe/1_idle/long_idle/I-16.png',
-        'assets/images/sprites/2_character_pepe/1_idle/long_idle/I-17.png',
-        'assets/images/sprites/2_character_pepe/1_idle/long_idle/I-18.png',
-        'assets/images/sprites/2_character_pepe/1_idle/long_idle/I-19.png',
-        'assets/images/sprites/2_character_pepe/1_idle/long_idle/I-20.png'
+        'assets/images/sprites/2_character_pepe/1_idle/long_idle/i_11.png',
+        'assets/images/sprites/2_character_pepe/1_idle/long_idle/i_12.png',
+        'assets/images/sprites/2_character_pepe/1_idle/long_idle/i_13.png',
+        'assets/images/sprites/2_character_pepe/1_idle/long_idle/i_13.png',
+        'assets/images/sprites/2_character_pepe/1_idle/long_idle/i_14.png',
+        'assets/images/sprites/2_character_pepe/1_idle/long_idle/i_15.png',
+        'assets/images/sprites/2_character_pepe/1_idle/long_idle/i_16.png',
+        'assets/images/sprites/2_character_pepe/1_idle/long_idle/i_17.png',
+        'assets/images/sprites/2_character_pepe/1_idle/long_idle/i_18.png',
+        'assets/images/sprites/2_character_pepe/1_idle/long_idle/i_19.png',
+        'assets/images/sprites/2_character_pepe/1_idle/long_idle/i_20.png'
     ];
 
 
     IMAGES_DEAD_PLAYER = [
-        'assets/images/sprites/2_character_pepe/5_dead/D-51.png',
-        'assets/images/sprites/2_character_pepe/5_dead/D-52.png',
-        'assets/images/sprites/2_character_pepe/5_dead/D-53.png',
-        'assets/images/sprites/2_character_pepe/5_dead/D-54.png',
-        'assets/images/sprites/2_character_pepe/5_dead/D-55.png',
-        'assets/images/sprites/2_character_pepe/5_dead/D-56.png',
-        'assets/images/sprites/2_character_pepe/5_dead/D-57.png'
+        'assets/images/sprites/2_character_pepe/5_dead/d_51.png',
+        'assets/images/sprites/2_character_pepe/5_dead/d_52.png',
+        'assets/images/sprites/2_character_pepe/5_dead/d_53.png',
+        'assets/images/sprites/2_character_pepe/5_dead/d_54.png',
+        'assets/images/sprites/2_character_pepe/5_dead/d_55.png',
+        'assets/images/sprites/2_character_pepe/5_dead/d_56.png',
+        'assets/images/sprites/2_character_pepe/5_dead/d_57.png'
     ];
 
     constructor() {
