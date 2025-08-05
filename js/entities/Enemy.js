@@ -3,6 +3,9 @@ class Enemy extends ObjectEntity {
     y = 360;
     height = 50;
     width = 50;
+    isDead = false;
+    fallSpeed = 0;
+    shouldRemove = false;
 
     IMAGES_WALKING_ENEMY = [
         'assets/images/sprites/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
@@ -22,7 +25,21 @@ class Enemy extends ObjectEntity {
 
     startMovement() {
         setInterval(() => {
-            this.moveLeft();
+            if (!this.isDead) {
+                this.moveLeft();
+            } else {
+                this.y += this.fallSpeed;
+                this.fallSpeed += 0.5;
+                if (this.y > 600) {
+                    this.shouldRemove = true;
+                }
+            }
         }, 1000 / 30);
+    }
+
+    startFalling() {
+        this.isDead = true;
+        this.fallSpeed = -8;
+        this.stopAnimation();
     }
 }

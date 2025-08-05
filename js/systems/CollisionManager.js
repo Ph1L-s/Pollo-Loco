@@ -6,7 +6,7 @@ class CollisionManager {
     checkCollisions(character, enemies, throwableObjects) {
 
         enemies.forEach((enemy) => {
-            if (character.isColliding(enemy)) {
+            if (!enemy.isDead && character.isColliding(enemy)) {
                 character.hit();
                 console.log('Player hit by enemy');
             }
@@ -31,5 +31,24 @@ class CollisionManager {
                 }
             }
         });
+    }
+
+    handlePhysicalCollision(player, enemy) {
+        let overlapX = Math.min(player.x + player.width - enemy.x, enemy.x + enemy.width - player.x);
+        let overlapY = Math.min(player.y + player.height - enemy.y, enemy.y + enemy.height - player.y);
+        
+        if (overlapX < overlapY) {
+            if (player.x < enemy.x) {
+                player.x = enemy.x - player.width;
+            } else {
+                player.x = enemy.x + enemy.width;
+            }
+        } else {
+            if (player.y < enemy.y) {
+                player.y = enemy.y - player.height;
+            } else {
+                player.y = enemy.y + enemy.height;
+            }
+        }
     }
 }

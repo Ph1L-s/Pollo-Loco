@@ -14,6 +14,11 @@ class Renderer {
     }
 
     addToMap(mo) {
+        if (mo.draw && typeof mo.draw === 'function') {
+            mo.draw(this.ctx);
+            return;
+        }
+
         if (!mo.img || !mo.img.complete || mo.img.naturalWidth === 0) {
             return; 
         }
@@ -39,7 +44,7 @@ class Renderer {
         });
     }
 
-    render(backgroundObjects, clouds, character, enemies, throwableObjects, statusBar) {
+    render(backgroundObjects, clouds, character, enemies, throwableObjects, bottles, statusBar) {
         this.clear();
         this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(backgroundObjects);
@@ -47,6 +52,7 @@ class Renderer {
         this.addToMap(character);
         this.addObjectsToMap(enemies);
         this.addObjectsToMap(throwableObjects);
+        this.addObjectsToMap(bottles);
         this.ctx.translate(-this.camera_x, 0);
         this.addToMap(statusBar); 
     }
