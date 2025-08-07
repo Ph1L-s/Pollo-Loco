@@ -3,6 +3,7 @@ let world;
 let input = new Input();
 let gameStarted = false;
 let gameOver = false;
+let showHitboxes = false;
 
 const GAME_OVER_IMAGE = [
     'assets/images/ui/9_intro_outro_screens/game_over/game_over.png'
@@ -10,15 +11,16 @@ const GAME_OVER_IMAGE = [
 
 console.log('Game.js loaded');
 
+/**
+ * @summary initializes and starts the main game session
+ * @description hides start screen, creates world instance with level 1, and activates game loop
+ */
 function startGame() {
     if (gameStarted) return;
     
     console.log('Starting game...');
     
-
     document.getElementById('startScreen').style.display = 'none';
-    
-
     document.getElementById('gameCanvas').style.filter = 'none';
     
     gameOver = false;
@@ -32,6 +34,43 @@ function startGame() {
     console.log('Game started!');
 }
 
+/**
+ * @summary resets game state and starts new game session
+ * @description cleans up current world, stops animations, clears canvas and reinitializes game
+ */
+function restartGame() {
+    console.log('Restarting game...');
+    
+    document.getElementById('gameOverScreen').style.display = 'none';
+    
+    gameStarted = false;
+    gameOver = false;
+    window.gameOver = false;
+    
+    canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    document.getElementById('gameCanvas').style.filter = 'none';
+    
+    if (world) {
+        if (world.character) {
+            world.character.stopAnimation();
+        }
+        if (world.enemies) {
+            world.enemies.forEach(enemy => enemy.stopAnimation());
+        }
+        world = null;
+        window.world = null;
+    }
+    
+    startGame();
+}
+
+/**
+ * @summary displays initial game start screen
+ * @description renders blue background on canvas before game begins
+ */
 function showStartScreen() {
     canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
@@ -40,6 +79,10 @@ function showStartScreen() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
+/**
+ * @summary displays game over screen with centered image and restart option
+ * @description stops animations, clears world, loads game over image with aspect ratio scaling
+ */
 function showGameOver() {
     console.log('Game Over!');
     console.log('GAME_OVER_IMAGE available?', typeof GAME_OVER_IMAGE);
@@ -87,9 +130,12 @@ function showGameOver() {
         
         ctx.drawImage(gameOverImg, x, y, drawWidth, drawHeight);
         console.log('Game Over image drawn at:', x, y, 'size:', drawWidth, 'x', drawHeight);
+        
+        document.getElementById('gameOverScreen').style.display = 'flex';
     };
     gameOverImg.onerror = function() {
         console.log('Failed to load Game Over image');
+        document.getElementById('gameOverScreen').style.display = 'flex';
     };
     console.log('Loading image:', GAME_OVER_IMAGE[0]);
     gameOverImg.src = GAME_OVER_IMAGE[0];
@@ -99,6 +145,10 @@ window.showGameOver = showGameOver;
 window.gameOver = gameOver;
 
 
+/**
+ * @summary initializes dom event listeners and displays start screen
+ * @description sets up button click handlers and shows initial game screen on page load
+ */
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Page loaded - showing start screen');
     console.log('Current world state:', window.world);
@@ -107,8 +157,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const startButton = document.getElementById('startButton');
     startButton.addEventListener('click', startGame);
+    
+    const restartButton = document.getElementById('restartButton');
+    restartButton.addEventListener('click', restartGame);
 });
 
+/**
+ * @summary handles keyboard input for game controls and debug features
+ * @description maps wasd/arrow keys for movement, space for jump, f for action, h for hitbox toggle
+ * @param {KeyboardEvent} event - keyboard event containing keyCode
+ */
 document.addEventListener('keydown', (event) => {
     if (event.keyCode === 68 || event.keyCode === 39) input.RIGHT = true;
     if (event.keyCode === 65 || event.keyCode === 37) input.LEFT = true;
@@ -116,8 +174,19 @@ document.addEventListener('keydown', (event) => {
     if (event.keyCode === 87 || event.keyCode === 38) input.UP = true;
     if (event.keyCode === 70) input.F = true;
     if (event.keyCode === 32) input.SPACE = true;
+    if (event.keyCode === 72 && world) {
+        showHitboxes = !showHitboxes;
+        window.showHitboxes = showHitboxes;
+        world.toggleHitboxes(showHitboxes);
+        console.log('Hitboxes turned', showHitboxes ? 'ON' : 'OFF');
+    }
 });
 
+/**
+ * @summary handles keyboard input release for smooth movement controls
+ * @description resets input flags when keys are released to stop movement
+ * @param {KeyboardEvent} event - keyboard event containing keyCode
+ */
 document.addEventListener('keyup', (event) => {
     if (event.keyCode === 68 || event.keyCode === 39) input.RIGHT = false;
     if (event.keyCode === 65 || event.keyCode === 37) input.LEFT = false;

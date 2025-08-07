@@ -87,6 +87,8 @@ class Player extends ObjectEntity {
         this.applyGravity();
         this.lastActionTime = Date.now();
         this.deathAnimationStarted = false;
+        this.isJumping = false;
+        this.isKnockedBack = false;
         setTimeout(() => this.animate(), 50);
     }
 
@@ -107,18 +109,21 @@ class Player extends ObjectEntity {
             this.moving = false;
             let hasInput = false;
             
-            if (this.world.input.RIGHT && this.x < this.world.level.level_end_x) {
-                this.moveRight();
-                this.moving = true;
-                hasInput = true;
-            }
-            if (this.world.input.LEFT && this.x > 120) {
-                this.moveLeft();
-                this.moving = true;
-                hasInput = true;
+            if (!this.isKnockedBack) {
+                if (this.world.input.RIGHT && this.x < this.world.level.level_end_x) {
+                    this.moveRight();
+                    this.moving = true;
+                    hasInput = true;
+                }
+                if (this.world.input.LEFT && this.x > 120) {
+                    this.moveLeft();
+                    this.moving = true;
+                    hasInput = true;
+                }
             }
             if ((this.world.input.SPACE || this.world.input.UP) && !this.isAboveGround()) {
-                this.speedY = 14;
+                this.speedY = 10;
+                this.isJumping = true;
                 hasInput = true;
             }
             
@@ -132,11 +137,14 @@ class Player extends ObjectEntity {
                     this.currentAnimationSet = 'hurt';
                 }
             } 
-            else if (this.isAboveGround()) {
+            else if (this.isAboveGround() || this.isJumping) {
                 if (this.currentAnimationSet !== 'jump') {
-                    console.log('Starting jump animation, speedY:', this.speedY);
-                    this.playAnimation(this.IMAGES_JUMPING_PLAYER, 70);
+                    this.playAnimation(this.IMAGES_JUMPING_PLAYER, 200);
                     this.currentAnimationSet = 'jump';
+                }
+                
+                if (!this.isAboveGround() && this.speedY <= 0) {
+                    this.isJumping = false;
                 }
             } 
             else if (this.moving) {
@@ -172,7 +180,7 @@ class Player extends ObjectEntity {
             }
 
             this.world.camera_x = -this.x + 100;
-        }, 1000 / 144);
+        }, 1000 / 64);
     }
 
     startDeathFall() {
@@ -196,6 +204,6 @@ class Player extends ObjectEntity {
                     showGameOver();
                 }, 1000);
             }
-        }, 1000 / 144);
+        }, 1000 / 64);
     }
 }

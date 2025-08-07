@@ -1,17 +1,14 @@
 class CollisionManager {
     constructor() {
         this.collisionTypes = [];
+        this.hitboxManager = new HitboxManager();
     }
 
     checkCollisions(character, enemies, throwableObjects) {
+        // Use new hitbox system for player-enemy collisions
+        this.hitboxManager.checkPlayerEnemyCollisions(character, enemies);
 
-        enemies.forEach((enemy) => {
-            if (!enemy.isDead && character.isColliding(enemy)) {
-                character.hit();
-                console.log('Player hit by enemy');
-            }
-        });
-
+        // Keep old system for bottle collisions
         throwableObjects.forEach((bottle, bottleIndex) => {
             enemies.forEach((enemy, enemyIndex) => {
                 if (bottle.isColliding && bottle.isColliding(enemy)) {
@@ -50,5 +47,15 @@ class CollisionManager {
                 player.y = enemy.y + enemy.height;
             }
         }
+    }
+
+    // Show/hide hitboxes
+    toggleHitboxes(show) {
+        this.hitboxManager.toggleHitboxes(show);
+    }
+
+    // Draw hitboxes
+    drawHitboxes(ctx, player, enemies) {
+        this.hitboxManager.drawAllHitboxes(ctx, player, enemies);
     }
 }

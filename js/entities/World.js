@@ -38,7 +38,10 @@ class World {
         for(let enemy of this.enemies) {
             collisionObjects.push(enemy);
         }
-        this.collisionManager.toggleCollisions(collisionObjects, true, [Player, Enemy, BossEntity]);
+        for(let bottle of this.bottles) {
+            collisionObjects.push(bottle);
+        }
+        this.collisionManager.toggleCollisions(collisionObjects, true, [Player, Enemy, BossEntity, Bottle]);
         this.throwableObjects.push(new ThrowableObject()); 
         this.draw();
         this.run();
@@ -60,12 +63,11 @@ class World {
         setInterval(() => {
             if (!this.enemies || this.character.isDead()) return;
             this.checkCollisions();
-            this.checkPlayerJumpOnEnemy();
             this.checkThrowObjects();
             this.checkBottleCollection();
             this.checkBottleEnemyCollisions();
             this.cleanupThrowableObjects();
-        }, 144);
+        }, 64);
     }
 
     checkThrowObjects(){
@@ -120,26 +122,6 @@ class World {
         });
     }
 
-    checkPlayerJumpOnEnemy() {
-        this.enemies.forEach((enemy, bottleIndex) => {
-            if (!enemy.isDead && !(enemy instanceof BossEntity) && this.isJumpingOnEnemy(this.character, enemy)) {
-                enemy.isDead = true;
-                enemy.startFalling();
-                this.character.speedY = -15;
-                console.log('Player jumped on enemy');
-            }
-        });
-    }
-
-    isJumpingOnEnemy(player, enemy) {
-        let horizontalOverlap = player.x < enemy.x + enemy.width && player.x + player.width > enemy.x;
-        let playerFeet = player.y + player.height;
-        let enemyTop = enemy.y;
-        let enemyMiddle = enemy.y + (enemy.height / 2);
-        let isPlayerFalling = player.speedY > 0;
-        
-        return horizontalOverlap && isPlayerFalling && playerFeet > enemyTop && playerFeet < enemyMiddle;
-    }
 
     cleanupThrowableObjects() {
         this.throwableObjects = this.throwableObjects.filter(bottle => !bottle.shouldRemove);
@@ -160,7 +142,8 @@ class World {
             this.enemies,
             this.throwableObjects,
             this.bottles,
-            this.statusBar
+            this.statusBar,
+            this.collisionManager
         );
         requestAnimationFrame(() => this.draw());
     }
@@ -176,6 +159,14 @@ class World {
         for(let bg of this.backgroundObjects) {
             allObjects.push(bg);
         }
+        for(let bottle of this.bottles) {
+            allObjects.push(bottle);
+        }
         this.collisionManager.toggleCollisions(allObjects, show, types);
+    }
+
+    // Toggle hitboxes on/off
+    toggleHitboxes(show) {
+        this.collisionManager.toggleHitboxes(show);
     }
 }

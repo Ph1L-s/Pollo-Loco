@@ -3,7 +3,9 @@ class ObjectEntity extends DrawableObjects {
     otherDirection = false;
     animationInterval = null;
     speedY = 0;
+    speedX = 0;
     acceleration = 0.5;
+    horizontalFriction = 0.8;
     currentAnimationSet = null;
     energy = 100;
     lastHit = 0;
@@ -32,7 +34,7 @@ class ObjectEntity extends DrawableObjects {
     isColliding(mo) {
         return this.x + this.width > mo.x &&
             this.y + this.height > mo.y &&
-            this.x < mo.x &&
+            this.x < mo.x + mo.width &&
             this.y < mo.y + mo.height;
     }
 
@@ -59,6 +61,7 @@ class ObjectEntity extends DrawableObjects {
 
     applyGravity() {
         setInterval(() => {
+            // Handle vertical movement (gravity)
             if (this.isAboveGround() || this.speedY > 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
@@ -73,7 +76,25 @@ class ObjectEntity extends DrawableObjects {
                     this.speedY = 0;
                 }
             }
-        }, 1000 / 144);
+            
+            // Handle horizontal knockback movement
+            if (this.speedX !== 0) {
+                this.x += this.speedX;
+                this.speedX *= this.horizontalFriction;
+                
+                if (Math.abs(this.speedX) < 0.1) {
+                    this.speedX = 0;
+                    if (this instanceof Player) {
+                        this.isKnockedBack = false;
+                    }
+                }
+            }
+            
+            // Reset knockback when landing
+            if (this instanceof Player && this.isKnockedBack && !this.isAboveGround() && this.speedY <= 0 && this.speedX === 0) {
+                this.isKnockedBack = false;
+            }
+        }, 1000 / 64);
     }
 
     isAboveGround() {

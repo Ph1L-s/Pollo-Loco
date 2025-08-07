@@ -19,6 +19,7 @@
     <script src="js/utils/Config.js"></script>
 
     <!-- Systems -->
+    <script src="js/systems/HitboxManager.js"></script>
     <script src="js/systems/CollisionManager.js"></script>
     <script src="js/systems/StatusBar.js"></script>
     <script src="js/systems/Physics.js"></script>
@@ -63,6 +64,9 @@
         <canvas id="gameCanvas" width="720" height="480"></canvas>
         <div id="startScreen">
             <button id="startButton">START</button>
+        </div>
+        <div id="gameOverScreen" style="display: none;">
+            <button id="restartButton">RESTART</button>
         </div>
     </div>
     

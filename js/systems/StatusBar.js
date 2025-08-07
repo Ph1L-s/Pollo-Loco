@@ -68,7 +68,7 @@ class StatusBar extends DrawableObjects {
     addBottle() {
         if (this.bottleCount < 5) {
             this.bottleCount++;
-            this.bottlePercentage = (this.bottleCount / 5) * 100;
+            this.bottlePercentage = (this.bottleCount / 4) * 100;
         }
     }
 

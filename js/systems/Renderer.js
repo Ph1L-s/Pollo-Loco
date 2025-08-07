@@ -44,7 +44,7 @@ class Renderer {
         });
     }
 
-    render(backgroundObjects, clouds, character, enemies, throwableObjects, bottles, statusBar) {
+    render(backgroundObjects, clouds, character, enemies, throwableObjects, bottles, statusBar, collisionManager = null) {
         this.clear();
         this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(backgroundObjects);
@@ -53,6 +53,30 @@ class Renderer {
         this.addObjectsToMap(enemies);
         this.addObjectsToMap(throwableObjects);
         this.addObjectsToMap(bottles);
+        
+        // Draw hitboxes if collision manager is provided
+        if (collisionManager) {
+            console.log('Renderer calling drawHitboxes');
+            collisionManager.drawHitboxes(this.ctx, character, enemies);
+        }
+        
+        // EMERGENCY HITBOX TEST - always draw simple boxes for now
+        if (window.showHitboxes) {
+            console.log('EMERGENCY: Drawing test hitboxes');
+            this.ctx.save();
+            this.ctx.strokeStyle = 'lime';
+            this.ctx.lineWidth = 3;
+            this.ctx.strokeRect(character.x, character.y, character.width, character.height);
+            
+            enemies.forEach(enemy => {
+                if (!enemy.isDead) {
+                    this.ctx.strokeStyle = 'red';
+                    this.ctx.strokeRect(enemy.x, enemy.y, enemy.width, enemy.height);
+                }
+            });
+            this.ctx.restore();
+        }
+        
         this.ctx.translate(-this.camera_x, 0);
         this.addToMap(statusBar); 
     }
