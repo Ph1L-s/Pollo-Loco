@@ -1,4 +1,13 @@
+/**
+ * @class AnimationManager
+ * @summary centralized animation system managing frame sequences and timing
+ * @description handles animation registration, playback, frame timing, and looping logic
+ */
 class AnimationManager {
+    /**
+     * @summary initializes animation manager with timing and frame tracking
+     * @description sets up animation storage, frame counters, and default timing values
+     */
     constructor() {
         this.animations = {};
         this.currentAnimation = null;
@@ -7,6 +16,13 @@ class AnimationManager {
         this.frameDelay = 100; 
     }
 
+    /**
+     * @summary registers new animation sequence with name and frame configuration
+     * @description stores animation data with frame array, looping behavior, and state tracking
+     * @param {string} name - unique identifier for animation sequence
+     * @param {Array<string>} frames - array of image paths for animation frames
+     * @param {boolean} loop - whether animation should loop when reaching end (default true)
+     */
     addAnimation(name, frames, loop = true) {
         this.animations[name] = {
             frames: frames,
@@ -15,6 +31,11 @@ class AnimationManager {
         };
     }
 
+    /**
+     * @summary starts playing specified animation sequence from beginning
+     * @description switches to new animation, resets frame counter and timing
+     * @param {string} name - name of registered animation to play
+     */
     playAnimation(name) {
         if (this.currentAnimation !== name) {
             this.currentAnimation = name;
@@ -23,6 +44,11 @@ class AnimationManager {
         }
     }
 
+    /**
+     * @summary advances animation frame based on delta time and handles looping
+     * @description updates frame timer, advances to next frame when delay reached, handles loop logic
+     * @param {number} deltaTime - milliseconds elapsed since last update
+     */
     update(deltaTime) {
         if (!this.currentAnimation) return;
 
@@ -44,6 +70,11 @@ class AnimationManager {
         }
     }
 
+    /**
+     * @summary retrieves current animation frame image path for rendering
+     * @description returns active frame path or null if no animation playing
+     * @returns {string|null} image path for current frame or null if no animation
+     */
     getCurrentFrame() {
         if (!this.currentAnimation) return null;
         const animation = this.animations[this.currentAnimation];

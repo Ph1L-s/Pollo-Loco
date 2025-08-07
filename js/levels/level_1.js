@@ -1,3 +1,8 @@
+/**
+ * @summary creates and configures first game level with enemies and background layers
+ * @description factory function assembling level 1 with 3 enemies, 1 boss, cloud, and 4-section parallax background
+ * @returns {Level} configured level instance ready for world initialization
+ */
 function createLevel1() {
     return new Level(
         [

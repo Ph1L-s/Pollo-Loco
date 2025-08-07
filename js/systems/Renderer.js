@@ -1,18 +1,42 @@
+/**
+ * @class Renderer
+ * @summary main rendering system handling canvas operations and camera movement
+ * @description manages 2d canvas rendering, sprite flipping, camera positioning, and debug visualization
+ */
 class Renderer {
+    /**
+     * @summary initializes renderer with canvas context and camera position
+     * @description sets up 2d rendering context and camera tracking for side-scrolling
+     * @param {HTMLCanvasElement} canvas - game canvas element for rendering
+     */
     constructor(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.camera_x = 0;
     }
 
+    /**
+     * @summary clears entire canvas for next frame rendering
+     * @description removes all drawn content from canvas using clearRect
+     */
     clear() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
+    /**
+     * @summary sets horizontal camera position for side-scrolling effect
+     * @description updates camera x offset for world translation during rendering
+     * @param {number} x - horizontal camera offset position
+     */
     setCameraX(x) {
         this.camera_x = x;
     }
 
+    /**
+     * @summary renders single game object with sprite flipping and collision debugging
+     * @description handles custom draw methods, sprite flipping for direction, collision boundary display
+     * @param {Object} mo - game object with img, x, y, width, height properties
+     */
     addToMap(mo) {
         if (mo.draw && typeof mo.draw === 'function') {
             mo.draw(this.ctx);
@@ -38,12 +62,29 @@ class Renderer {
         }
     }
 
+    /**
+     * @summary renders array of game objects using addToMap for each object
+     * @description iterates through object array and renders each using individual render method
+     * @param {Array<Object>} objects - array of game objects to render
+     */
     addObjectsToMap(objects) {
         objects.forEach(o => {
             this.addToMap(o);
         });
     }
 
+    /**
+     * @summary main render method drawing all game entities in correct layering order
+     * @description clears canvas, applies camera transform, renders all objects, handles debug hitboxes
+     * @param {Array<BackgroundObject>} backgroundObjects - background layer objects
+     * @param {Array<Cloud>} clouds - cloud layer objects
+     * @param {Player} character - main player character
+     * @param {Array<Enemy>} enemies - enemy entities array
+     * @param {Array<ThrowableObject>} throwableObjects - projectile objects
+     * @param {Array<Bottle>} bottles - collectible bottle objects
+     * @param {StatusBar} statusBar - ui status bar (rendered without camera transform)
+     * @param {CollisionManager} collisionManager - optional collision manager for debug rendering
+     */
     render(backgroundObjects, clouds, character, enemies, throwableObjects, bottles, statusBar, collisionManager = null) {
         this.clear();
         this.ctx.translate(this.camera_x, 0);
@@ -54,13 +95,11 @@ class Renderer {
         this.addObjectsToMap(throwableObjects);
         this.addObjectsToMap(bottles);
         
-        // Draw hitboxes if collision manager is provided
         if (collisionManager) {
             console.log('Renderer calling drawHitboxes');
             collisionManager.drawHitboxes(this.ctx, character, enemies);
         }
         
-        // EMERGENCY HITBOX TEST - always draw simple boxes for now
         if (window.showHitboxes) {
             console.log('EMERGENCY: Drawing test hitboxes');
             this.ctx.save();

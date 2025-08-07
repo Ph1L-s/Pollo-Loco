@@ -1,4 +1,17 @@
+/**
+ * @class ThrowableObject
+ * @extends ObjectEntity
+ * @summary projectile bottle with physics-based throwing, rotation animation, and splash effects
+ * @description handles bottle throwing mechanics, rotation during flight, splash on impact
+ */
 class ThrowableObject extends ObjectEntity {
+    /**
+     * @summary initializes throwable bottle with position, direction, and physics properties
+     * @description sets up bottle projectile with directional throwing, gravity, and animation frames
+     * @param {number} x - initial horizontal position for bottle spawn
+     * @param {number} y - initial vertical position for bottle spawn
+     * @param {boolean} otherDirection - true for left throw, false for right throw
+     */
     constructor(x, y, otherDirection) {
         super();
         this.x = x;
@@ -40,6 +53,10 @@ class ThrowableObject extends ObjectEntity {
         this.animate();
     }
 
+    /**
+     * @summary applies physics-based throwing motion with horizontal movement and gravity
+     * @description moves bottle horizontally first, then applies gravity after straight distance
+     */
     throw() {
         setInterval(() => {
             if (!this.isSplashing) {
@@ -62,6 +79,10 @@ class ThrowableObject extends ObjectEntity {
         }, 25);
     }
 
+    /**
+     * @summary manages bottle rotation during flight and splash animation on impact
+     * @description cycles through rotation frames while flying, plays splash sequence on ground hit
+     */
     animate() {
         setInterval(() => {
             if (!this.isSplashing) {
@@ -87,6 +108,11 @@ class ThrowableObject extends ObjectEntity {
         }, 100);
     }
 
+    /**
+     * @summary custom rendering method with opacity control for fade-out effect
+     * @description draws bottle with alpha transparency during splash fade-out sequence
+     * @param {CanvasRenderingContext2D} ctx - canvas rendering context for drawing
+     */
     draw(ctx) {
         if (this.img && this.img.complete && this.img.naturalWidth > 0) {
             ctx.save();

@@ -1,3 +1,9 @@
+/**
+ * @class Enemy
+ * @extends ObjectEntity
+ * @summary basic enemy character with walking animation and death falling mechanics
+ * @description handles enemy movement, collision detection, and removal after death fall
+ */
 class Enemy extends ObjectEntity {
     x = 100;
     y = 360;
@@ -13,6 +19,10 @@ class Enemy extends ObjectEntity {
         'assets/images/sprites/3_enemies_chicken/chicken_normal/1_walk/3_w.png'
     ];
 
+    /**
+     * @summary initializes enemy with random position, speed, and walking animation
+     * @description loads walking sprites, sets random spawn position and movement speed
+     */
     constructor() {
         super().loadImage(this.IMAGES_WALKING_ENEMY[0]);
         this.loadImages(this.IMAGES_WALKING_ENEMY);
@@ -23,6 +33,10 @@ class Enemy extends ObjectEntity {
         this.playAnimation(this.IMAGES_WALKING_ENEMY, 90);
     }
 
+    /**
+     * @summary starts enemy movement loop handling walking and death falling
+     * @description moves left when alive, applies falling physics when dead until off-screen
+     */
     startMovement() {
         setInterval(() => {
             if (!this.isDead) {
@@ -37,6 +51,10 @@ class Enemy extends ObjectEntity {
         }, 1000 / 30);
     }
 
+    /**
+     * @summary initiates enemy death sequence with upward bounce and falling
+     * @description marks as dead, applies initial upward velocity, stops walking animation
+     */
     startFalling() {
         this.isDead = true;
         this.fallSpeed = -8;

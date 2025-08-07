@@ -1,3 +1,9 @@
+/**
+ * @class Player
+ * @extends ObjectEntity
+ * @summary main player character class with movement, animations, and physics
+ * @description handles player input, state management, animations, and death mechanics
+ */
 class Player extends ObjectEntity {
     x = 100;
     y = 40;
@@ -75,6 +81,10 @@ class Player extends ObjectEntity {
         'assets/images/sprites/2_character_pepe/5_dead/d_57.png'
     ];
 
+    /**
+     * @summary initializes player with sprite animations and physics
+     * @description loads all animation sprite sets, applies gravity, sets initial state flags
+     */
     constructor() {
         super().loadImage(this.IMAGES_WALKING_PLAYER[0]); 
         this.loadImages(this.IMAGES_DEFAULT_PLAYER);
@@ -92,6 +102,10 @@ class Player extends ObjectEntity {
         setTimeout(() => this.animate(), 50);
     }
 
+    /**
+     * @summary main animation and input handling loop for player character
+     * @description processes input, manages state transitions, handles animations, and updates camera
+     */
     animate() {
         setInterval(() => {
             if (!this.world || !this.world.input) return;
@@ -183,6 +197,10 @@ class Player extends ObjectEntity {
         }, 1000 / 64);
     }
 
+    /**
+     * @summary initiates death falling animation with accelerating physics
+     * @description loads death sprite, applies downward velocity, triggers game over when off screen
+     */
     startDeathFall() {
         console.log('startDeathFall() called');
         this.stopAnimation();
@@ -199,7 +217,6 @@ class Player extends ObjectEntity {
                 clearInterval(this.deathFallInterval);
                 console.log('Player fell out of world');
                 
-                // game over screen
                 setTimeout(() => {
                     showGameOver();
                 }, 1000);
