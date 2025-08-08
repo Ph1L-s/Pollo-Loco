@@ -9,6 +9,10 @@ function createLevel1() {
             new Enemy(),
             new Enemy(),
             new Enemy(),
+            new SmallEnemy(),
+            new SmallEnemy(),
+            new SmallEnemy(),
+            new SmallEnemy(),
             new BossEntity()
         ],
         [
@@ -20,20 +24,35 @@ function createLevel1() {
             new BackgroundObject('assets/images/backgrounds/layers/2_second_layer/1.png', 0),
             new BackgroundObject('assets/images/backgrounds/layers/1_first_layer/1.png', 0),
             
-            new BackgroundObject('assets/images/backgrounds/layers/air.png', 720),
-            new BackgroundObject('assets/images/backgrounds/layers/3_third_layer/2.png', 720),
-            new BackgroundObject('assets/images/backgrounds/layers/2_second_layer/2.png', 720),
-            new BackgroundObject('assets/images/backgrounds/layers/1_first_layer/2.png', 720),
+            new BackgroundObject('assets/images/backgrounds/layers/air.png', 719),
+            new BackgroundObject('assets/images/backgrounds/layers/3_third_layer/2.png', 719),
+            new BackgroundObject('assets/images/backgrounds/layers/2_second_layer/2.png', 719),
+            new BackgroundObject('assets/images/backgrounds/layers/1_first_layer/2.png', 719),
 
-            new BackgroundObject('assets/images/backgrounds/layers/air.png', 1440),
-            new BackgroundObject('assets/images/backgrounds/layers/3_third_layer/1.png', 1440),
-            new BackgroundObject('assets/images/backgrounds/layers/2_second_layer/1.png', 1440),
-            new BackgroundObject('assets/images/backgrounds/layers/1_first_layer/1.png', 1440),
+            new BackgroundObject('assets/images/backgrounds/layers/air.png', 1439),
+            new BackgroundObject('assets/images/backgrounds/layers/3_third_layer/1.png', 1439),
+            new BackgroundObject('assets/images/backgrounds/layers/2_second_layer/1.png', 1439),
+            new BackgroundObject('assets/images/backgrounds/layers/1_first_layer/1.png', 1439),
 
-            new BackgroundObject('assets/images/backgrounds/layers/air.png', 2160),
-            new BackgroundObject('assets/images/backgrounds/layers/3_third_layer/2.png', 2160),
-            new BackgroundObject('assets/images/backgrounds/layers/2_second_layer/2.png', 2160),
-            new BackgroundObject('assets/images/backgrounds/layers/1_first_layer/2.png', 2160),
+            new BackgroundObject('assets/images/backgrounds/layers/air.png', 2159),
+            new BackgroundObject('assets/images/backgrounds/layers/3_third_layer/2.png', 2159),
+            new BackgroundObject('assets/images/backgrounds/layers/2_second_layer/2.png', 2159),
+            new BackgroundObject('assets/images/backgrounds/layers/1_first_layer/2.png', 2159),
+
+            new BackgroundObject('assets/images/backgrounds/layers/air.png', 2879),
+            new BackgroundObject('assets/images/backgrounds/layers/3_third_layer/1.png', 2879),
+            new BackgroundObject('assets/images/backgrounds/layers/2_second_layer/1.png', 2879),
+            new BackgroundObject('assets/images/backgrounds/layers/1_first_layer/1.png', 2879),
+
+            new BackgroundObject('assets/images/backgrounds/layers/air.png', 3599),
+            new BackgroundObject('assets/images/backgrounds/layers/3_third_layer/2.png', 3599),
+            new BackgroundObject('assets/images/backgrounds/layers/2_second_layer/2.png', 3599),
+            new BackgroundObject('assets/images/backgrounds/layers/1_first_layer/2.png', 3599),
+
+            new BackgroundObject('assets/images/backgrounds/layers/air.png', 4319),
+            new BackgroundObject('assets/images/backgrounds/layers/3_third_layer/1.png', 4319),
+            new BackgroundObject('assets/images/backgrounds/layers/2_second_layer/1.png', 4319),
+            new BackgroundObject('assets/images/backgrounds/layers/1_first_layer/1.png', 4319),
             
         ],
     );

@@ -25,9 +25,26 @@ class CollisionManager {
         throwableObjects.forEach((bottle, bottleIndex) => {
             enemies.forEach((enemy, enemyIndex) => {
                 if (bottle.isColliding && bottle.isColliding(enemy)) {
-                    enemies.splice(enemyIndex, 1);
+                    if (enemy.constructor.name === 'BossEntity') {
+                        // Boss takes damage instead of being removed
+                        enemy.hit(20);
+                        console.log(`Boss hit! Energy: ${enemy.energy}`);
+                        
+                        // Update boss status bar if callback provided
+                        if (this.onBossHit) {
+                            this.onBossHit(enemy.energy);
+                        }
+                        
+                        if (enemy.isDead()) {
+                            enemy.startFalling();
+                        }
+                    } else {
+                        // Normal enemies are removed
+                        if (enemy.startFalling) {
+                            enemy.startFalling();
+                        }
+                    }
                     throwableObjects.splice(bottleIndex, 1);
-                    console.log('Enemy hit by bottle');
                 }
             });
         });
@@ -83,7 +100,8 @@ class CollisionManager {
      */
     checkPlayerEnemyCollisions(player, enemies) {
         enemies.forEach((enemy) => {
-            if (!enemy.isDead && player.isColliding(enemy) && !player.isDead()) {
+            let enemyDead = typeof enemy.isDead === 'function' ? enemy.isDead() : enemy.isDead;
+            if (!enemyDead && player.isColliding(enemy) && !player.isDead()) {
                 let collisionType = this.getCollisionType(player, enemy);
                 
                 if (collisionType === 'top') {
@@ -91,11 +109,12 @@ class CollisionManager {
                 } else {
                     let shouldTakeDamage = this.handleSideCollision(player, enemy);
                     if (shouldTakeDamage) {
-                        player.hit(20); // Präziser Schaden
-                        
                         // Boss-spezifische Behandlung
                         if (enemy.constructor.name === 'BossEntity') {
+                            player.hit(50); // Boss verursacht 50 Schaden
                             this.applyKnockback(player, enemy);
+                        } else {
+                            player.hit(20); // Normale Gegner verursachen 20 Schaden
                         }
                         return;
                     }
@@ -165,7 +184,7 @@ class CollisionManager {
                 player.speedX = -knockbackForce;
             }
         } else {
-            if (player.x < 2500) {
+            if (player.x < 4000) {
                 player.speedX = knockbackForce;
             }
         }

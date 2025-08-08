@@ -1,14 +1,14 @@
 /**
- * @class Enemy
+ * @class SmallEnemy
  * @extends ObjectEntity
- * @summary basic enemy character with walking animation and death falling mechanics
- * @description handles enemy movement, collision detection, and removal after death fall
+ * @summary small enemy character with faster walking animation and death falling mechanics
+ * @description handles small enemy movement, collision detection, and removal after death fall
  */
-class Enemy extends ObjectEntity {
+class SmallEnemy extends ObjectEntity {
     x = 100;
     y = 360;
-    height = 60;
-    width = 60;
+    height = 50;
+    width = 50;
     isDead = false;
     fallSpeed = 0;
     shouldRemove = false;
@@ -21,18 +21,18 @@ class Enemy extends ObjectEntity {
     };
 
     IMAGES_WALKING_ENEMY = [
-        'assets/images/sprites/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
-        'assets/images/sprites/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
-        'assets/images/sprites/3_enemies_chicken/chicken_normal/1_walk/3_w.png'
+        'assets/images/sprites/3_enemies_chicken/chicken_small/1_walk/1_w.png',
+        'assets/images/sprites/3_enemies_chicken/chicken_small/1_walk/2_w.png',
+        'assets/images/sprites/3_enemies_chicken/chicken_small/1_walk/3_w.png'
     ];
 
     IMAGES_DEAD = [
-        'assets/images/sprites/3_enemies_chicken/chicken_normal/2_dead/dead.png'
+        'assets/images/sprites/3_enemies_chicken/chicken_small/2_dead/dead.png'
     ];
 
     /**
-     * @summary initializes enemy with random position, speed, and walking animation
-     * @description loads walking sprites, sets random spawn position and movement speed
+     * @summary initializes small enemy with random position, faster speed, and walking animation
+     * @description loads walking sprites, sets random spawn position and faster movement speed
      */
     constructor() {
         super().loadImage(this.IMAGES_WALKING_ENEMY[0]);
@@ -40,7 +40,7 @@ class Enemy extends ObjectEntity {
         this.loadImages(this.IMAGES_DEAD);
 
         this.x = 400 + Math.random() * 3200; // Besser verteilt zwischen 400-3600
-        this.speed = 0.22 + Math.random() * 0.51;
+        this.speed = 0.15 + Math.random() * 0.25;
         this.startMovement();
         this.startWalkingAnimation();
     }
@@ -68,7 +68,7 @@ class Enemy extends ObjectEntity {
      * @description marks as dead, applies initial upward velocity, stops walking animation
      */
     startWalkingAnimation() {
-        this.playAnimation(this.IMAGES_WALKING_ENEMY, 200);
+        this.playAnimation(this.IMAGES_WALKING_ENEMY, 180);
     }
 
     startFalling() {

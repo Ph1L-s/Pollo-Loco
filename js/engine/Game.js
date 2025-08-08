@@ -42,6 +42,7 @@ function restartGame() {
     console.log('Restarting game...');
     
     document.getElementById('gameOverScreen').style.display = 'none';
+    document.getElementById('youWonScreen').style.display = 'none';
     
     gameStarted = false;
     gameOver = false;
@@ -160,6 +161,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const restartButton = document.getElementById('restartButton');
     restartButton.addEventListener('click', restartGame);
+    
+    const youWonRestartButton = document.getElementById('youWonRestartButton');
+    youWonRestartButton.addEventListener('click', restartGame);
 });
 
 /**

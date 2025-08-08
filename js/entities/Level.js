@@ -7,7 +7,7 @@ class Level {
     enemies;
     clouds;
     backgroundObjects;
-    level_end_x = 2260;
+    level_end_x = 4000;
 
     /**
      * @summary initializes level with entity arrays and world boundaries

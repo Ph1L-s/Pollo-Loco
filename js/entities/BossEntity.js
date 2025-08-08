@@ -5,16 +5,15 @@
  * @description larger enemy with alert state animation, collision detection, and death sequence
  */
 class BossEntity extends ObjectEntity {
-    height = 225;
-    width = 175;
-    y = 20;
-    x = 2800;
+    height = 270;
+    width = 210;
+    y = 150;
+    x = 3800;
     energy = 100;
-    isDead = false;
     fallSpeed = 0;
     shouldRemove = false;
-    speed = 0.5;
-    walkSpeed = 0.5;
+    speed = 1.44;
+    walkSpeed = 1.44;
     lastHitTimeStamp = 0;
     isMoving = false;
 
@@ -37,27 +36,33 @@ class BossEntity extends ObjectEntity {
     ];
 
     IMAGES_WALKING = [
-        'assets/images/sprites/4_enemie_boss_chicken/1_walk/g1.png',
-        'assets/images/sprites/4_enemie_boss_chicken/1_walk/g2.png',
-        'assets/images/sprites/4_enemie_boss_chicken/1_walk/g3.png',
-        'assets/images/sprites/4_enemie_boss_chicken/1_walk/g4.png'
+        'assets/images/sprites/4_enemie_boss_chicken/1_walk/G1.png',
+        'assets/images/sprites/4_enemie_boss_chicken/1_walk/G2.png',
+        'assets/images/sprites/4_enemie_boss_chicken/1_walk/G3.png',
+        'assets/images/sprites/4_enemie_boss_chicken/1_walk/G4.png'
     ];
 
     IMAGES_ATTACK = [
-        'assets/images/sprites/4_enemie_boss_chicken/3_attack/g17.png',
-        'assets/images/sprites/4_enemie_boss_chicken/3_attack/g18.png'
+        'assets/images/sprites/4_enemie_boss_chicken/3_attack/G13.png',
+        'assets/images/sprites/4_enemie_boss_chicken/3_attack/G14.png',
+        'assets/images/sprites/4_enemie_boss_chicken/3_attack/G15.png',
+        'assets/images/sprites/4_enemie_boss_chicken/3_attack/G16.png',
+        'assets/images/sprites/4_enemie_boss_chicken/3_attack/G17.png',
+        'assets/images/sprites/4_enemie_boss_chicken/3_attack/G18.png',
+        'assets/images/sprites/4_enemie_boss_chicken/3_attack/G19.png',
+        'assets/images/sprites/4_enemie_boss_chicken/3_attack/G20.png'
     ];
 
     IMAGES_HURT = [
-        'assets/images/sprites/4_enemie_boss_chicken/4_hurt/g21.png',
-        'assets/images/sprites/4_enemie_boss_chicken/4_hurt/g22.png',
-        'assets/images/sprites/4_enemie_boss_chicken/4_hurt/g23.png'
+        'assets/images/sprites/4_enemie_boss_chicken/4_hurt/G21.png',
+        'assets/images/sprites/4_enemie_boss_chicken/4_hurt/G22.png',
+        'assets/images/sprites/4_enemie_boss_chicken/4_hurt/G23.png'
     ];
 
     IMAGES_DEAD = [
-        'assets/images/sprites/4_enemie_boss_chicken/5_dead/g24.png',
-        'assets/images/sprites/4_enemie_boss_chicken/5_dead/g25.png',
-        'assets/images/sprites/4_enemie_boss_chicken/5_dead/g26.png'
+        'assets/images/sprites/4_enemie_boss_chicken/5_dead/G24.png',
+        'assets/images/sprites/4_enemie_boss_chicken/5_dead/G25.png',
+        'assets/images/sprites/4_enemie_boss_chicken/5_dead/G26.png'
     ];
 
     /**
@@ -80,22 +85,42 @@ class BossEntity extends ObjectEntity {
     startBossLogic() {
         // Animation interval
         setInterval(() => {
-            if (this.isDead) {
-                this.playAnimation(this.IMAGES_DEAD, 200);
+            if (this.isDead()) {
+                if (this.currentAnimationSet !== 'dead') {
+                    this.stopAnimation();
+                    this.playAnimation(this.IMAGES_DEAD, 200);
+                    this.currentAnimationSet = 'dead';
+                }
             } else if (this.isHurt()) {
-                this.playAnimation(this.IMAGES_HURT, 150);
+                if (this.currentAnimationSet !== 'hurt') {
+                    this.stopAnimation();
+                    this.playAnimation(this.IMAGES_HURT, 150);
+                    this.currentAnimationSet = 'hurt';
+                }
             } else if (this.isAboveGround()) {
-                this.playAnimation(this.IMAGES_ATTACK, false);
+                if (this.currentAnimationSet !== 'attack') {
+                    this.stopAnimation();
+                    this.playAnimation(this.IMAGES_ATTACK, 120);
+                    this.currentAnimationSet = 'attack';
+                }
             } else if (this.isMoving) {
-                this.playAnimation(this.IMAGES_WALKING, 120);
+                if (this.currentAnimationSet !== 'walking') {
+                    this.stopAnimation();
+                    this.playAnimation(this.IMAGES_WALKING, 120);
+                    this.currentAnimationSet = 'walking';
+                }
             } else {
-                this.playAnimation(this.IMAGES_ALERT, 150);
+                if (this.currentAnimationSet !== 'alert') {
+                    this.stopAnimation();
+                    this.playAnimation(this.IMAGES_ALERT, 150);
+                    this.currentAnimationSet = 'alert';
+                }
             }
         }, 140);
 
         // Movement interval
         setInterval(() => {
-            if (this.isDead) {
+            if (this.isDead()) {
                 this.y += this.fallSpeed;
                 this.fallSpeed += 0.5;
                 if (this.y > 600) {
@@ -117,7 +142,7 @@ class BossEntity extends ObjectEntity {
     }
 
     hit(damage = 20) {
-        if (this.isDead || !this.hitTimeStamp()) return;
+        if (this.isDead() || !this.hitTimeStamp()) return;
         
         this.energy -= damage;
         this.lastHitTimeStamp = new Date().getTime();
@@ -142,7 +167,10 @@ class BossEntity extends ObjectEntity {
     }
 
     startFalling() {
-        this.isDead = true;
+        this.energy = 0;
         this.fallSpeed = -8;
+        this.stopAnimation();
+        this.img = this.imageCache[this.IMAGES_DEAD[0]];
+        this.currentAnimationSet = 'dead';
     }
 }

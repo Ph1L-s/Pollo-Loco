@@ -21,11 +21,13 @@
     <!-- Game Objects (nach ObjectEntity) -->
     <script src="js/entities/Player.js"></script>
     <script src="js/entities/Enemy.js"></script>
+    <script src="js/entities/SmallEnemy.js"></script>
     <script src="js/entities/BossEntity.js"></script>
 
     <!-- Systems -->
     <script src="js/systems/CollisionManager.js"></script>
     <script src="js/systems/StatusBar.js"></script>
+    <script src="js/systems/BossStatusBar.js"></script>
     <script src="js/systems/Physics.js"></script>
     <script src="js/systems/Renderer.js"></script>
     <script src="js/systems/Audio.js"></script>
@@ -66,7 +68,12 @@
             <button id="startButton">START</button>
         </div>
         <div id="gameOverScreen" style="display: none;">
+            <img src="assets/images/ui/9_intro_outro_screens/game_over/game_over.png" alt="Game Over" style="width: 400px; height: auto;">
             <button id="restartButton">RESTART</button>
+        </div>
+        <div id="youWonScreen" style="display: none;">
+            <img src="assets/images/ui/You won, you lost/you_won.png" alt="You Won!" style="width: 400px; height: auto;">
+            <button id="youWonRestartButton">RESTART</button>
         </div>
     </div>
     

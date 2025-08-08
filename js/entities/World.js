@@ -33,6 +33,8 @@ class World {
         this.character = new Player();
         this.statusBar = new StatusBar();
         this.enemies = level.enemies || [];
+        this.boss = this.enemies.find(enemy => enemy instanceof BossEntity);
+        this.bossStatusBar = this.boss ? new BossStatusBar(this.boss.x, this.boss.y) : null;
         this.clouds = level.clouds || [];
         this.throwableObjects = [];
         this.bottles = [];
@@ -48,6 +50,13 @@ class World {
         this.renderer = new Renderer(canvas);
         this.collisionManager = new CollisionManager();
         
+        // Set boss hit callback for status bar updates
+        if (this.bossStatusBar) {
+            this.collisionManager.onBossHit = (bossEnergy) => {
+                this.bossStatusBar.setPercentage(bossEnergy);
+            };
+        }
+        
         this.setWorld();
         const collisionObjects = [this.character];
         for(let enemy of this.enemies) {
@@ -59,7 +68,7 @@ class World {
         for(let coin of this.coins) {
             collisionObjects.push(coin);
         }
-        this.collisionManager.toggleCollisions(collisionObjects, true, [Player, Enemy, BossEntity, Bottle, Coin]);
+        this.collisionManager.toggleCollisions(collisionObjects, false, [Player, Enemy, SmallEnemy, BossEntity, Bottle, Coin]);
         this.throwableObjects.push(new ThrowableObject()); 
         this.draw();
         this.run();
@@ -70,16 +79,16 @@ class World {
      * @description spawns 5 bottles spaced 400 units apart horizontally for player collection
      */
     spawnBottles() {
-        for (let bottleIndex = 0; bottleIndex < 5; bottleIndex++) {
-            let x = 300 + (bottleIndex * 400);
+        for (let bottleIndex = 0; bottleIndex < 8; bottleIndex++) {
+            let x = 400 + Math.random() * 3200; // Zufällig über gesamte Spielfläche verteilt
             let y = 370; // Näher zum Boden
             this.bottles.push(new Bottle(x, y));
         }
     }
 
     spawnCoins() {
-        for (let coinIndex = 0; coinIndex < 10; coinIndex++) {
-            let x = 200 + Math.random() * 2000; // Random zwischen 200-2200
+        for (let coinIndex = 0; coinIndex < 15; coinIndex++) {
+            let x = 400 + Math.random() * 3200; // Zufällig über gesamte Spielfläche verteilt
             let y = 200 + Math.random() * 150; // Random zwischen 200-350 (verschiedene Höhen)
             this.coins.push(new Coin(x, y));
         }
@@ -160,7 +169,7 @@ class World {
         this.coins.forEach((coin, coinIndex) => {
             if (!coin.isCollected() && this.isColliding(this.character, coin)) {
                 coin.collect();
-                this.coinPercentage += 20;
+                this.coinPercentage = Math.min(100, this.coinPercentage + (100 / 15)); // 15 coins = 100%
                 this.statusBar.setCoinPercentage(this.coinPercentage);
                 console.log(`Coin collected! Percentage: ${this.coinPercentage}`);
                 this.coins.splice(coinIndex, 1);
@@ -232,6 +241,19 @@ class World {
         }
         
         this.renderer.setCameraX(this.camera_x);
+        
+        // Update boss status bar position (only if boss is alive)
+        if (this.boss && this.bossStatusBar && !this.boss.isDead()) {
+            this.bossStatusBar.updatePosition(this.boss.x, this.boss.y);
+        } else if (this.boss && this.boss.isDead()) {
+            // Hide boss status bar when boss is dead
+            this.bossStatusBar = null;
+            // Check if boss has fallen off screen to trigger win screen
+            if (this.boss.shouldRemove) {
+                this.showYouWonScreen();
+            }
+        }
+        
         this.renderer.render(
             this.backgroundObjects,
             this.clouds,
@@ -241,7 +263,8 @@ class World {
             this.bottles,
             this.coins,
             this.statusBar,
-            this.collisionManager
+            this.collisionManager,
+            this.bossStatusBar
         );
         requestAnimationFrame(() => this.draw());
     }
@@ -291,5 +314,16 @@ class World {
                 entity.toggleCollision(show);
             }
         });
+    }
+
+    /**
+     * @summary displays you won screen when boss is defeated
+     * @description shows victory screen with you_won image and restart button
+     */
+    showYouWonScreen() {
+        console.log('You won! Boss defeated!');
+        window.gameOver = true;
+        document.getElementById('youWonScreen').style.display = 'flex';
+        document.getElementById('gameCanvas').style.filter = 'blur(5px)';
     }
 }

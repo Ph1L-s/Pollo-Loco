@@ -34,6 +34,9 @@ class ObjectEntity extends DrawableObjects {
         } else if (this.constructor.name === 'Enemy') {
             ctx.strokeStyle = 'red';
             ctx.fillStyle = 'rgba(255, 0, 0, 0.1)';
+        } else if (this.constructor.name === 'SmallEnemy') {
+            ctx.strokeStyle = 'yellow';
+            ctx.fillStyle = 'rgba(255, 255, 0, 0.1)';
         } else if (this.constructor.name === 'BossEntity') {
             ctx.strokeStyle = 'orange';
             ctx.fillStyle = 'rgba(255, 165, 0, 0.1)';
@@ -163,8 +166,8 @@ class ObjectEntity extends DrawableObjects {
                         this.speedX = 0;
                         this.isKnockedBack = false;
                     }
-                    if (this.x > 2500) {
-                        this.x = 2500;
+                    if (this.x > 4000) {
+                        this.x = 4000;
                         this.speedX = 0;
                         this.isKnockedBack = false;
                     }

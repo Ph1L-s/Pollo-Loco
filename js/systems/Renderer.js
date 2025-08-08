@@ -86,7 +86,7 @@ class Renderer {
      * @param {StatusBar} statusBar - ui status bar (rendered without camera transform)
      * @param {CollisionManager} collisionManager - optional collision manager for debug rendering
      */
-    render(backgroundObjects, clouds, character, enemies, throwableObjects, bottles, coins, statusBar, collisionManager = null) {
+    render(backgroundObjects, clouds, character, enemies, throwableObjects, bottles, coins, statusBar, collisionManager = null, bossStatusBar = null) {
         this.clear();
         this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(backgroundObjects);
@@ -96,6 +96,11 @@ class Renderer {
         this.addObjectsToMap(throwableObjects);
         this.addObjectsToMap(bottles);
         this.addObjectsToMap(coins);
+        
+        // Render boss status bar with camera transform
+        if (bossStatusBar) {
+            this.addToMap(bossStatusBar);
+        }
         
         if (collisionManager && collisionManager.showCollisions) {
             console.log('Renderer drawing collision boxes');
