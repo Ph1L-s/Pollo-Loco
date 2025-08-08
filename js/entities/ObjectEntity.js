@@ -17,52 +17,81 @@ class ObjectEntity extends DrawableObjects {
     lastHit = 0;
 
     /**
-     * @summary determines if entity should display collision boundary for debugging
-     * @description checks if entity type should show collision visualization
-     * @returns {boolean} true for player, enemy, and boss entities
-     */
-    shouldShowCollision() {
-        return this instanceof Player || 
-               this instanceof Enemy || 
-               this instanceof BossEntity;
-    }
-
-    /**
-     * @summary renders collision boundary rectangle for debugging purposes
-     * @description draws blue outline around entity hitbox when collision display is enabled
+     * @summary renders optimized collision boundary with color coding
+     * @description draws collision rectangle with entity-specific colors and transparency
      * @param {CanvasRenderingContext2D} ctx - canvas rendering context
      */
     drawCollision(ctx) {
-        if (!this.shouldShowCollision() || !this.showCollision) return;
+        if (!this.showCollision) return;
+        
+        ctx.save();
         ctx.beginPath();
-        ctx.lineWidth = '1';
-        ctx.strokeStyle = 'blue';
+        ctx.lineWidth = 2;
+        
+        if (this.constructor.name === 'Player') {
+            ctx.strokeStyle = 'blue';
+            ctx.fillStyle = 'rgba(0, 0, 255, 0.1)';
+        } else if (this.constructor.name === 'Enemy') {
+            ctx.strokeStyle = 'red';
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.1)';
+        } else if (this.constructor.name === 'BossEntity') {
+            ctx.strokeStyle = 'orange';
+            ctx.fillStyle = 'rgba(255, 165, 0, 0.1)';
+        } else {
+            ctx.strokeStyle = 'green';
+            ctx.fillStyle = 'rgba(0, 255, 0, 0.1)';
+        }
+        
         ctx.rect(this.x, this.y, this.width, this.height);
         ctx.stroke();
+        ctx.fill();
+        ctx.restore();
     }
 
     /**
      * @summary toggles collision boundary visualization for debugging
-     * @description enables or disables collision box display for eligible entities
+     * @description enables or disables collision box display
      * @param {boolean} show - whether to show collision boundaries
      */
     toggleCollision(show) {
-        if (this.shouldShowCollision()) {
-            this.showCollision = show;
-        }
+        this.showCollision = show;
     }
 
     /**
-     * @summary basic collision detection using axis-aligned bounding box
-     * @description checks if this entity overlaps with another entity's rectangular bounds
+     * @summary optimized collision detection using axis-aligned bounding box
+     * @description checks if this entity overlaps with another entity with early exit optimization
      * @param {ObjectEntity} mo - other entity to test collision against
      * @returns {boolean} true if entities are colliding
      */
     isColliding(mo) {
-        return this.x + this.width > mo.x &&
-            this.y + this.height > mo.y &&
-            this.x < mo.x + mo.width &&
-            this.y < mo.y + mo.height;
+        if (!mo) return false;
+        
+        return this.x < mo.x + mo.width &&
+               this.x + this.width > mo.x &&
+               this.y < mo.y + mo.height &&
+               this.y + this.height > mo.y;
+    }
+
+    /**
+     * @summary calculates collision overlap for physics resolution
+     * @description determines overlap distance on both axes for separation
+     * @param {ObjectEntity} other - other entity to calculate overlap with
+     * @returns {Object} object with overlapX and overlapY properties
+     */
+    getCollisionOverlap(other) {
+        if (!this.isColliding(other)) return { overlapX: 0, overlapY: 0 };
+        
+        let overlapX = Math.min(
+            this.x + this.width - other.x,
+            other.x + other.width - this.x
+        );
+        
+        let overlapY = Math.min(
+            this.y + this.height - other.y,
+            other.y + other.height - this.y
+        );
+        
+        return { overlapX, overlapY };
     }
 
     /**
@@ -72,13 +101,14 @@ class ObjectEntity extends DrawableObjects {
     hit() {
         if (this.isDead()) return;
         
+        this.lastHit = new Date().getTime();
         this.energy -= 5;
+        
         if (this.energy <= 0) {
             this.energy = 0;
             console.log('player dead!');
-        } else {
-            this.lastHit = new Date().getTime();
         }
+        
     }
 
     /**
@@ -105,13 +135,15 @@ class ObjectEntity extends DrawableObjects {
      * @description handles vertical falling with ground collision and horizontal movement with friction
      */
     applyGravity() {
-        setInterval(() => {
+        if (this.gravityInterval) return;
+        
+        this.gravityInterval = setInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
                 
                 let groundLevel = 120; 
-                if (this instanceof ThrowableObject) {
+                if (this.constructor.name === 'ThrowableObject') {
                     groundLevel = 380; 
                 }
                 
@@ -123,20 +155,35 @@ class ObjectEntity extends DrawableObjects {
             
             if (this.speedX !== 0) {
                 this.x += this.speedX;
+                
+                // Map boundaries for Player
+                if (this.constructor.name === 'Player') {
+                    if (this.x < 50) {
+                        this.x = 50;
+                        this.speedX = 0;
+                        this.isKnockedBack = false;
+                    }
+                    if (this.x > 2500) {
+                        this.x = 2500;
+                        this.speedX = 0;
+                        this.isKnockedBack = false;
+                    }
+                }
+                
                 this.speedX *= this.horizontalFriction;
                 
                 if (Math.abs(this.speedX) < 0.1) {
                     this.speedX = 0;
-                    if (this instanceof Player) {
+                    if (this.constructor.name === 'Player') {
                         this.isKnockedBack = false;
                     }
                 }
             }
             
-            if (this instanceof Player && this.isKnockedBack && !this.isAboveGround() && this.speedY <= 0 && this.speedX === 0) {
+            if (this.constructor.name === 'Player' && this.isKnockedBack && !this.isAboveGround() && this.speedY <= 0 && this.speedX === 0) {
                 this.isKnockedBack = false;
             }
-        }, 1000 / 64);
+        }, 16); // Optimiert: 60 FPS statt 64 FPS
     }
 
     /**
@@ -169,9 +216,9 @@ class ObjectEntity extends DrawableObjects {
      * @param {number} interval - milliseconds between frame changes (default 100)
      */
     playAnimation(images, interval = 100) {
-        if (this instanceof Player) {
+        if (this.constructor.name === 'Player') {
             console.log('Player animation:', images.length, 'frames');
-        } else if (this instanceof Enemy || this instanceof BossEntity) {
+        } else if (this.constructor.name === 'Enemy' || this.constructor.name === 'BossEntity') {
             console.log(`${this.constructor.name} animation started`);
         }
         
@@ -216,7 +263,7 @@ class ObjectEntity extends DrawableObjects {
      */
     moveLeft() {
         this.x -= this.speed;
-        if (this instanceof Player) {
+        if (this.constructor.name === 'Player') {
             this.otherDirection = true;
         }
         this.moving = true;

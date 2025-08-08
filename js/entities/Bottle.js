@@ -11,14 +11,21 @@ class Bottle extends DrawableObjects {
      * @param {number} x - horizontal world position for bottle placement
      * @param {number} y - vertical world position for bottle placement
      */
+    offset = {
+        top: 10,
+        bottom: 5,
+        left: 5,
+        right: 5
+    };
+
     constructor(x, y) {
         super();
         this.x = x;
         this.y = y;
-        this.width = 60;
-        this.height = 60;
+        this.width = 40;
+        this.height = 50;
         this.img = new Image();
-        this.img.src = 'assets/images/sprites/6_salsa_bottle/salsa_bottle.png';
+        this.img.src = 'assets/images/sprites/6_salsa_bottle/2_salsa_bottle_on_ground.png';
         this.collected = false;
     }
 

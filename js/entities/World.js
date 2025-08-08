@@ -36,7 +36,12 @@ class World {
         this.clouds = level.clouds || [];
         this.throwableObjects = [];
         this.bottles = [];
+        this.coins = [];
+        this.bottlePercentage = 0;
+        this.coinPercentage = 0;
+        this.lastThrowableObject = 0;
         this.spawnBottles();
+        this.spawnCoins();
         this.backgroundObjects = level.backgroundObjects || [];
         this.character = new Player();
         
@@ -51,7 +56,10 @@ class World {
         for(let bottle of this.bottles) {
             collisionObjects.push(bottle);
         }
-        this.collisionManager.toggleCollisions(collisionObjects, true, [Player, Enemy, BossEntity, Bottle]);
+        for(let coin of this.coins) {
+            collisionObjects.push(coin);
+        }
+        this.collisionManager.toggleCollisions(collisionObjects, true, [Player, Enemy, BossEntity, Bottle, Coin]);
         this.throwableObjects.push(new ThrowableObject()); 
         this.draw();
         this.run();
@@ -64,8 +72,16 @@ class World {
     spawnBottles() {
         for (let bottleIndex = 0; bottleIndex < 5; bottleIndex++) {
             let x = 300 + (bottleIndex * 400);
-            let y = 300;
+            let y = 370; // Näher zum Boden
             this.bottles.push(new Bottle(x, y));
+        }
+    }
+
+    spawnCoins() {
+        for (let coinIndex = 0; coinIndex < 10; coinIndex++) {
+            let x = 200 + Math.random() * 2000; // Random zwischen 200-2200
+            let y = 200 + Math.random() * 150; // Random zwischen 200-350 (verschiedene Höhen)
+            this.coins.push(new Coin(x, y));
         }
     }
 
@@ -77,16 +93,13 @@ class World {
         this.character.world = this;
     }
 
-    /**
-     * @summary main game logic update loop running at ~15fps
-     * @description processes collisions, bottle throwing, collection, enemy interactions and cleanup
-     */
     run() {
         setInterval(() => {
             if (!this.enemies || this.character.isDead()) return;
             this.checkCollisions();
             this.checkThrowObjects();
             this.checkBottleCollection();
+            this.checkCoinCollection();
             this.checkBottleEnemyCollisions();
             this.cleanupThrowableObjects();
         }, 64);
@@ -97,17 +110,25 @@ class World {
      * @description checks f key input, consumes bottle from inventory, spawns throwable object
      */
     checkThrowObjects(){
-        if(this.input.F && this.statusBar.hasBottles()){
-            if(this.statusBar.useBottle()){
-                let bottle = new ThrowableObject(
-                    this.character.x + 50, 
-                    this.character.y + 80, 
-                    this.character.otherDirection 
-                );
-                this.throwableObjects.push(bottle);
-            }
+        if(this.input.F && this.bottlePercentage > 0 && this.checkLastThrowenObjectTime()){
+            let bottle = new ThrowableObject(
+                this.character.x + 50, 
+                this.character.y + 150, 
+                this.character.otherDirection 
+            );
+            this.throwableObjects.push(bottle);
+            
+            this.lastThrowableObject = new Date().getTime();
+            this.bottlePercentage -= 20;
+            this.statusBar.setBottlePercentage(this.bottlePercentage);
+            console.log(`Bottle thrown! Percentage: ${this.bottlePercentage}`);
+            
             this.input.F = false; 
         }
+    }
+
+    checkLastThrowenObjectTime(){
+        return new Date().getTime() - this.lastThrowableObject > 500;
     }
 
     /**
@@ -125,26 +146,43 @@ class World {
      */
     checkBottleCollection() {
         this.bottles.forEach((bottle, bottleIndex) => {
-            if (!bottle.isCollected() && this.isColliding(this.character, bottle)) {
+            if (!bottle.isCollected() && this.isColliding(this.character, bottle) && this.bottlePercentage < 100) {
                 bottle.collect();
-                this.statusBar.addBottle();
+                this.bottlePercentage += 20;
+                this.statusBar.setBottlePercentage(this.bottlePercentage);
+                console.log(`Bottle collected! Percentage: ${this.bottlePercentage}`);
                 this.bottles.splice(bottleIndex, 1);
             }
         });
     }
 
+    checkCoinCollection() {
+        this.coins.forEach((coin, coinIndex) => {
+            if (!coin.isCollected() && this.isColliding(this.character, coin)) {
+                coin.collect();
+                this.coinPercentage += 20;
+                this.statusBar.setCoinPercentage(this.coinPercentage);
+                console.log(`Coin collected! Percentage: ${this.coinPercentage}`);
+                this.coins.splice(coinIndex, 1);
+            }
+        });
+    }
+
     /**
-     * @summary basic axis-aligned bounding box collision detection
-     * @description checks if two rectangular objects overlap using aabb algorithm
-     * @param {Object} obj1 - first object with x, y, width, height properties
-     * @param {Object} obj2 - second object with x, y, width, height properties
+     * @summary offset-aware collision detection for precise hit detection
+     * @description checks if two objects overlap using offset values for pixel-perfect collisions
+     * @param {Object} obj1 - first object with x, y, width, height, offset properties
+     * @param {Object} obj2 - second object with x, y, width, height, offset properties
      * @returns {boolean} true if objects are colliding
      */
     isColliding(obj1, obj2) {
-        return obj1.x < obj2.x + obj2.width &&
-               obj1.x + obj1.width > obj2.x &&
-               obj1.y < obj2.y + obj2.height &&
-               obj1.y + obj1.height > obj2.y;
+        let offset1 = obj1.offset || { top: 0, left: 0, right: 0, bottom: 0 };
+        let offset2 = obj2.offset || { top: 0, left: 0, right: 0, bottom: 0 };
+        
+        return obj1.x + obj1.width - offset1.right > obj2.x + offset2.left &&
+               obj1.y + obj1.height - offset1.bottom > obj2.y + offset2.top &&
+               obj1.x + offset1.left < obj2.x + obj2.width - offset2.right &&
+               obj1.y + offset1.top < obj2.y + obj2.height - offset2.bottom;
     }
 
     /**
@@ -159,8 +197,14 @@ class World {
                         bottle.isSplashing = true;
                         bottle.speedX = 0;
                         bottle.speedY = 0;
-                        enemy.isDead = true;
-                        enemy.startFalling();
+                        
+                        // Boss braucht mehrere Treffer
+                        if (enemy.constructor.name === 'BossEntity') {
+                            enemy.hit(20);
+                            console.log(`Boss hit! Energy: ${enemy.energy}`);
+                        } else {
+                            enemy.hit(100); // Normale Enemies sterben sofort
+                        }
                     }
                 });
             }
@@ -195,6 +239,7 @@ class World {
             this.enemies,
             this.throwableObjects,
             this.bottles,
+            this.coins,
             this.statusBar,
             this.collisionManager
         );
@@ -225,11 +270,26 @@ class World {
     }
 
     /**
-     * @summary toggles hitbox visualization for advanced collision debugging
-     * @description delegates hitbox display control to collision manager system
-     * @param {boolean} show - whether to show or hide hitboxes
+     * @summary toggles collision visualization for debugging purposes
+     * @description shows or hides collision boxes for debugging collision detection
+     * @param {boolean} show - whether to show or hide collision boxes
      */
-    toggleHitboxes(show) {
-        this.collisionManager.toggleHitboxes(show);
+    toggleCollisions(show) {
+        this.collisionManager.toggleCollisionDisplay(show);
+        this.toggleCollision(show, [this.character, ...this.enemies]);
+    }
+
+    /**
+     * @summary toggles collision display for array of entities
+     * @description enables collision box visualization for specified entities
+     * @param {boolean} show - whether to show collision boxes
+     * @param {Array<ObjectEntity>} entities - entities to toggle collision display for
+     */
+    toggleCollision(show, entities) {
+        entities.forEach(entity => {
+            if (entity && entity.toggleCollision) {
+                entity.toggleCollision(show);
+            }
+        });
     }
 }

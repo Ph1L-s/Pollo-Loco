@@ -13,6 +13,13 @@ class Enemy extends ObjectEntity {
     fallSpeed = 0;
     shouldRemove = false;
 
+    offset = {
+        top: 10,
+        bottom: 5,
+        left: 10,
+        right: 10
+    };
+
     IMAGES_WALKING_ENEMY = [
         'assets/images/sprites/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
         'assets/images/sprites/3_enemies_chicken/chicken_normal/1_walk/2_w.png',

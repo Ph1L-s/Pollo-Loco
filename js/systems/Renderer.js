@@ -68,6 +68,7 @@ class Renderer {
      * @param {Array<Object>} objects - array of game objects to render
      */
     addObjectsToMap(objects) {
+        if (!objects || !Array.isArray(objects)) return;
         objects.forEach(o => {
             this.addToMap(o);
         });
@@ -85,7 +86,7 @@ class Renderer {
      * @param {StatusBar} statusBar - ui status bar (rendered without camera transform)
      * @param {CollisionManager} collisionManager - optional collision manager for debug rendering
      */
-    render(backgroundObjects, clouds, character, enemies, throwableObjects, bottles, statusBar, collisionManager = null) {
+    render(backgroundObjects, clouds, character, enemies, throwableObjects, bottles, coins, statusBar, collisionManager = null) {
         this.clear();
         this.ctx.translate(this.camera_x, 0);
         this.addObjectsToMap(backgroundObjects);
@@ -94,10 +95,12 @@ class Renderer {
         this.addObjectsToMap(enemies);
         this.addObjectsToMap(throwableObjects);
         this.addObjectsToMap(bottles);
+        this.addObjectsToMap(coins);
         
-        if (collisionManager) {
-            console.log('Renderer calling drawHitboxes');
-            collisionManager.drawHitboxes(this.ctx, character, enemies);
+        if (collisionManager && collisionManager.showCollisions) {
+            console.log('Renderer drawing collision boxes');
+            character.drawCollision(this.ctx);
+            enemies.forEach(enemy => enemy.drawCollision(this.ctx));
         }
         
         if (window.showHitboxes) {

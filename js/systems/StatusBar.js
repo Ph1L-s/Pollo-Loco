@@ -99,6 +99,14 @@ class StatusBar extends DrawableObjects {
         this.coinPercentage = Math.min(100, this.coinPercentage + 20);
     }
 
+    removeCoin() {
+        if (this.coinPercentage > 0) {
+            this.coinPercentage = Math.max(0, this.coinPercentage - 20);
+            return true; // Coin war vorhanden und wurde entfernt
+        }
+        return false; // Keine Coins vorhanden
+    }
+
     /**
      * @summary adds bottle to inventory and updates visual percentage
      * @description increases bottle count up to maximum 5, recalculates percentage display

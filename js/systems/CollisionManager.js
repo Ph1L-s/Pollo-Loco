@@ -1,27 +1,26 @@
 /**
  * @class CollisionManager
- * @summary main collision detection system coordinating between entities and hitbox manager
- * @description manages collision detection between player, enemies, and projectiles using advanced hitbox system
+ * @summary optimized collision detection system for all game entities
+ * @description manages collision detection between player, enemies, and projectiles with integrated physics
  */
 class CollisionManager {
     /**
-     * @summary initializes collision manager with hitbox manager instance
-     * @description creates collision type tracking and advanced hitbox detection system
+     * @summary initializes collision manager with debug visualization
+     * @description creates collision tracking with debug display toggle
      */
     constructor() {
-        this.collisionTypes = [];
-        this.hitboxManager = new HitboxManager();
+        this.showCollisions = false;
     }
 
     /**
      * @summary processes all collision interactions between entities in the game world
-     * @description delegates player-enemy collisions to hitbox manager, handles bottle-enemy collisions
+     * @description handles player-enemy collisions with physics response and bottle-enemy collisions
      * @param {Player} character - player character to check collisions for
      * @param {Array<Enemy>} enemies - array of enemy entities
      * @param {Array<ThrowableObject>} throwableObjects - array of throwable bottle projectiles
      */
     checkCollisions(character, enemies, throwableObjects) {
-        this.hitboxManager.checkPlayerEnemyCollisions(character, enemies);
+        this.checkPlayerEnemyCollisions(character, enemies);
 
         throwableObjects.forEach((bottle, bottleIndex) => {
             enemies.forEach((enemy, enemyIndex) => {
@@ -77,22 +76,107 @@ class CollisionManager {
     }
 
     /**
-     * @summary toggles hitbox visualization for advanced collision debugging
-     * @description delegates hitbox display control to hitbox manager system
-     * @param {boolean} show - whether to show or hide detailed hitboxes
+     * @summary processes collision interactions between player and enemy array
+     * @description checks collisions, prevents spam damage with cooldown, handles directional responses
+     * @param {Player} player - player object to check collisions against
+     * @param {Array<Enemy>} enemies - array of enemy objects to test collisions with
      */
-    toggleHitboxes(show) {
-        this.hitboxManager.toggleHitboxes(show);
+    checkPlayerEnemyCollisions(player, enemies) {
+        enemies.forEach((enemy) => {
+            if (!enemy.isDead && player.isColliding(enemy) && !player.isDead()) {
+                let collisionType = this.getCollisionType(player, enemy);
+                
+                if (collisionType === 'top') {
+                    this.handleTopCollision(player, enemy);
+                } else {
+                    let shouldTakeDamage = this.handleSideCollision(player, enemy);
+                    if (shouldTakeDamage) {
+                        player.hit(20); // Präziser Schaden
+                        
+                        // Boss-spezifische Behandlung
+                        if (enemy.constructor.name === 'BossEntity') {
+                            this.applyKnockback(player, enemy);
+                        }
+                        return;
+                    }
+                }
+            }
+        });
     }
 
     /**
-     * @summary renders debug hitboxes for all game entities
-     * @description delegates hitbox rendering to hitbox manager with color coding
-     * @param {CanvasRenderingContext2D} ctx - canvas rendering context
-     * @param {Player} player - player entity to draw hitbox for
-     * @param {Array<Enemy>} enemies - array of enemy entities to draw hitboxes for
+     * @summary determines collision direction between player and enemy
+     * @description analyzes player velocity and position to classify as top or side collision
+     * @param {Player} player - player object with position and velocity
+     * @param {Enemy} enemy - enemy object with position
+     * @returns {string} 'top' for jump attacks, 'side' for horizontal collisions
      */
-    drawHitboxes(ctx, player, enemies) {
-        this.hitboxManager.drawAllHitboxes(ctx, player, enemies);
+    getCollisionType(player, enemy) {
+        let playerBottom = player.y + player.height;
+        let enemyTop = enemy.y;
+
+        if (player.speedY < 0 && playerBottom < enemyTop + 20) {
+            return 'top';
+        } else {
+            return 'side';
+        }
+    }
+
+    /**
+     * @summary handles jump attack collision where player lands on enemy
+     * @description triggers enemy death fall and gives player slight bounce
+     * @param {Player} player - player object to apply bounce effect
+     * @param {Enemy} enemy - enemy object to trigger death animation
+     * @returns {boolean} false indicating no damage to player
+     */
+    handleTopCollision(player, enemy) {
+        if (enemy.startFalling) {
+            enemy.startFalling();
+        }
+        player.speedY = 5;
+        return false;
+    }
+
+    /**
+     * @summary handles horizontal collision between player and enemy
+     * @description applies knockback physics and indicates player should take damage
+     * @param {Player} player - player object to receive knockback
+     * @param {Enemy} enemy - enemy object causing collision
+     * @returns {boolean} true indicating player should take damage
+     */
+    handleSideCollision(player, enemy) {
+        this.applyKnockback(player, enemy);
+        return true;
+    }
+
+    /**
+     * @summary applies directional knockback force to player based on enemy position
+     * @description calculates knockback direction and applies horizontal velocity
+     * @param {Player} player - player object to receive knockback physics
+     * @param {Enemy} enemy - enemy object determining knockback direction
+     */
+    applyKnockback(player, enemy) {
+        let knockbackForce = 15;
+        
+        player.isKnockedBack = true;
+        
+        if (player.x < enemy.x) {
+            if (player.x > 50) {
+                player.speedX = -knockbackForce;
+            }
+        } else {
+            if (player.x < 2500) {
+                player.speedX = knockbackForce;
+            }
+        }
+    }
+
+    /**
+     * @summary toggles collision visualization for debugging purposes
+     * @description shows or hides collision boxes for all entities
+     * @param {boolean} show - whether to show or hide collision boundaries
+     */
+    toggleCollisionDisplay(show) {
+        this.showCollisions = show;
     }
 }

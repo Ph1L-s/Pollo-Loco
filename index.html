@@ -8,18 +8,22 @@
 
 </head>
 <body>
-    <!-- Base Classes -->
-    <script src="js/systems/DrawableObjects.js"></script>
-    <script src="js/entities/ObjectEntity.js"></script>
-    <script src="js/entities/ThrowableObject.js"></script>
-    
     <!-- Utils -->
     <script src="js/utils/Vector2.js"></script>
     <script src="js/utils/Utils.js"></script>
     <script src="js/utils/Config.js"></script>
 
+    <!-- Base Classes -->
+    <script src="js/systems/DrawableObjects.js"></script>
+    <script src="js/entities/ObjectEntity.js"></script>
+    <script src="js/entities/ThrowableObject.js"></script>
+    
+    <!-- Game Objects (nach ObjectEntity) -->
+    <script src="js/entities/Player.js"></script>
+    <script src="js/entities/Enemy.js"></script>
+    <script src="js/entities/BossEntity.js"></script>
+
     <!-- Systems -->
-    <script src="js/systems/HitboxManager.js"></script>
     <script src="js/systems/CollisionManager.js"></script>
     <script src="js/systems/StatusBar.js"></script>
     <script src="js/systems/Physics.js"></script>
@@ -33,15 +37,11 @@
     <script src="js/engine/Scene.js"></script>
     <script src="js/engine/AnimationManager.js"></script>
     <script src="js/engine/GameLoop.js"></script>
-
-    <!-- Game Objects -->
-    <script src="js/entities/Player.js"></script>
-    <script src="js/entities/Enemy.js"></script>
-    <script src="js/entities/BossEntity.js"></script>
     <script src="js/entities/BackgroundObjects.js"></script>
     <script src="js/entities/WorldObjects.js"></script>
     <script src="js/entities/Projectile.js"></script>
     <script src="js/entities/Bottle.js"></script>
+    <script src="js/entities/Coin.js"></script>
 
 
     <!-- Levels -->

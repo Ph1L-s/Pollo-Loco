@@ -5,11 +5,21 @@
  * @description handles player input, state management, animations, and death mechanics
  */
 class Player extends ObjectEntity {
-    x = 100;
+    x = 300;
     y = 40;
     height = 300;
+    width = 80;
     speed = 4;
     world;
+
+    offset = {
+        top: 130,
+        bottom: 15,
+        left: 30,
+        right: 40
+    };
+
+    lastHitTimeStamp = 0;
 
 
     IMAGES_DEFAULT_PLAYER = [
@@ -123,17 +133,15 @@ class Player extends ObjectEntity {
             this.moving = false;
             let hasInput = false;
             
-            if (!this.isKnockedBack) {
-                if (this.world.input.RIGHT && this.x < this.world.level.level_end_x) {
-                    this.moveRight();
-                    this.moving = true;
-                    hasInput = true;
-                }
-                if (this.world.input.LEFT && this.x > 120) {
-                    this.moveLeft();
-                    this.moving = true;
-                    hasInput = true;
-                }
+            if (this.world.input.RIGHT && this.x < this.world.level.level_end_x) {
+                this.moveRight();
+                this.moving = true;
+                hasInput = true;
+            }
+            if (this.world.input.LEFT && this.x > 120) {
+                this.moveLeft();
+                this.moving = true;
+                hasInput = true;
             }
             if ((this.world.input.SPACE || this.world.input.UP) && !this.isAboveGround()) {
                 this.speedY = 10;
@@ -147,7 +155,7 @@ class Player extends ObjectEntity {
 
             if (this.isHurt()) {
                 if (this.currentAnimationSet !== 'hurt') {
-                    this.playAnimation(this.IMAGES_HURT_PLAYER, 200);
+                    this.playAnimation(this.IMAGES_HURT_PLAYER, 150);
                     this.currentAnimationSet = 'hurt';
                 }
             } 
@@ -222,5 +230,27 @@ class Player extends ObjectEntity {
                 }, 1000);
             }
         }, 1000 / 64);
+    }
+
+    hit(damage = 20) {
+        if (this.isDead() || !this.hitTimeStamp()) return;
+        
+        this.energy -= damage;
+        if (this.energy < 0) {
+            this.energy = 0;
+        } else {
+            this.lastHit = new Date().getTime();
+        }
+        this.lastHitTimeStamp = new Date().getTime();
+        
+        console.log(`Player hit! Damage: ${damage}, Energy: ${this.energy}`);
+        
+        if (this.energy <= 0) {
+            console.log('player dead!');
+        }
+    }
+
+    hitTimeStamp() {
+        return new Date().getTime() - this.lastHitTimeStamp > 1000;
     }
 }

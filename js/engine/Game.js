@@ -177,7 +177,7 @@ document.addEventListener('keydown', (event) => {
     if (event.keyCode === 72 && world) {
         showHitboxes = !showHitboxes;
         window.showHitboxes = showHitboxes;
-        world.toggleHitboxes(showHitboxes);
+        world.toggleCollisions(showHitboxes);
         console.log('Hitboxes turned', showHitboxes ? 'ON' : 'OFF');
     }
 });
