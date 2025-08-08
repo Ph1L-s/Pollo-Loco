@@ -182,6 +182,9 @@ class World {
         this.bottles.forEach((bottle, bottleIndex) => {
             if (!bottle.isCollected() && this.isColliding(this.character, bottle) && this.bottlePercentage < 100) {
                 bottle.collect();
+                if (window.menuManager) {
+                    window.menuManager.getSoundManager().playSFX('BOTTLE_GRAB');
+                }
                 this.bottlePercentage += 20;
                 this.statusBar.setBottlePercentage(this.bottlePercentage);
                 this.bottles.splice(bottleIndex, 1);
@@ -197,6 +200,9 @@ class World {
         this.coins.forEach((coin, coinIndex) => {
             if (!coin.isCollected() && this.isColliding(this.character, coin)) {
                 coin.collect();
+                if (window.menuManager) {
+                    window.menuManager.getSoundManager().playSFX('COIN_COLLECT');
+                }
                 this.coinPercentage = Math.min(100, this.coinPercentage + (100 / 15));
                 this.statusBar.setCoinPercentage(this.coinPercentage);
                 this.coins.splice(coinIndex, 1);
@@ -233,6 +239,10 @@ class World {
                         bottle.isSplashing = true;
                         bottle.speedX = 0;
                         bottle.speedY = 0;
+                        
+                        if (window.menuManager) {
+                            window.menuManager.getSoundManager().playSFX('BOTTLE_BREAK');
+                        }
                         
                         if (enemy.constructor.name === 'BossEntity') {
                             enemy.hit(20);
@@ -347,6 +357,10 @@ class World {
      * @description shows victory screen with you_won image and restart button
      */
     showYouWonScreen() {
+        if (window.menuManager) {
+            window.menuManager.getSoundManager().playSFX('GAME_WON');
+            window.menuManager.getSoundManager().playSFX('BOSS_DIE');
+        }
         window.gameOver = true;
         document.getElementById('youWonScreen').style.display = 'flex';
         document.getElementById('gameCanvas').style.filter = 'blur(5px)';

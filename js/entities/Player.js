@@ -109,6 +109,7 @@ class Player extends ObjectEntity {
         this.deathAnimationStarted = false;
         this.isJumping = false;
         this.isKnockedBack = false;
+        this.hKeyPressed = false;
         setTimeout(() => this.animate(), 50);
     }
 
@@ -145,11 +146,26 @@ class Player extends ObjectEntity {
             if ((this.world.input.SPACE || this.world.input.UP) && !this.isAboveGround()) {
                 this.speedY = 10;
                 this.isJumping = true;
+                if (window.menuManager) {
+                    window.menuManager.getSoundManager().playSFX('PLAYER_JUMP');
+                }
                 hasInput = true;
+            }
+            
+            if (this.world.input.H && !this.hKeyPressed) {
+                this.hKeyPressed = true;
+                window.showHitboxes = !window.showHitboxes;
+                this.world.toggleCollisions(window.showHitboxes);
+            } else if (!this.world.input.H) {
+                this.hKeyPressed = false;
             }
             
             if (hasInput || this.moving || this.isAboveGround() || this.isHurt()) {
                 this.lastActionTime = Date.now();
+                // Stop idle sound when player becomes active
+                if (window.menuManager) {
+                    window.menuManager.getSoundManager().stopSFX('PLAYER_IDLE');
+                }
             }
 
             if (this.isHurt()) {
@@ -172,17 +188,23 @@ class Player extends ObjectEntity {
                 if (this.currentAnimationSet !== 'walk') {
                     this.playAnimation(this.IMAGES_WALKING_PLAYER, 120);
                     this.currentAnimationSet = 'walk';
+                    if (window.menuManager) {
+                        window.menuManager.getSoundManager().playSFX('PLAYER_STEP');
+                    }
                 }
             } 
             else {
                 const timeSinceLastAction = Date.now() - this.lastActionTime;
                 
-                if (timeSinceLastAction >= 1000) { 
+                if (timeSinceLastAction >= 6000) { 
                     if (this.currentAnimationSet !== 'idleLong') {
                         this.playAnimation(this.IMAGES_IDL_LONG_PLAYER, 200);
                         this.currentAnimationSet = 'idleLong';
+                        if (window.menuManager) {
+                            window.menuManager.getSoundManager().playSFX('PLAYER_IDLE');
+                        }
                     }
-                } else if (timeSinceLastAction >= 500) {
+                } else if (timeSinceLastAction >= 3000) {
                     if (this.currentAnimationSet !== 'idleShort') {
                         this.playAnimation(this.IMAGES_IDL_SHORT_PLAYER, 200);
                         this.currentAnimationSet = 'idleShort';
@@ -220,6 +242,10 @@ class Player extends ObjectEntity {
     startDeathFall() {
         this.stopAnimation();
         
+        if (window.menuManager) {
+            window.menuManager.getSoundManager().playSFX('PLAYER_DIE');
+        }
+        
         this.loadImage(this.IMAGES_DEAD_PLAYER[0]);
         
         this.speedY = 10; 
@@ -246,6 +272,9 @@ class Player extends ObjectEntity {
             this.energy = 0;
         } else {
             this.lastHit = new Date().getTime();
+            if (window.menuManager) {
+                window.menuManager.getSoundManager().playSFX('PLAYER_HURT');
+            }
         }
         this.lastHitTimeStamp = new Date().getTime();
         

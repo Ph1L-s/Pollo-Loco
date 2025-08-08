@@ -81,6 +81,10 @@ class SmallEnemy extends ObjectEntity {
         this.stopAnimation();
         this.img = this.imageCache[this.IMAGES_DEAD[0]];
         
+        if (window.menuManager) {
+            window.menuManager.getSoundManager().playSFX('ENEMY_DIE');
+        }
+        
         if (Math.random() < 0.2) {
             this.dropBottle();
         }

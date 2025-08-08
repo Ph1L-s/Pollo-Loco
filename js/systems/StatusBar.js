@@ -48,8 +48,8 @@ class StatusBar extends DrawableObjects {
         this.loadImages(this.BOTTLE_BAR_IMAGES);
         this.x = 50;
         this.y = 10;
-        this.width = 200;
-        this.height = 50;
+        this.width = 150;
+        this.height = 37;
         this.setHealthPercentage(100);
     }
 
@@ -102,9 +102,9 @@ class StatusBar extends DrawableObjects {
     removeCoin() {
         if (this.coinPercentage > 0) {
             this.coinPercentage = Math.max(0, this.coinPercentage - 20);
-            return true; // Coin war vorhanden und wurde entfernt
+            return true;
         }
-        return false; // Keine Coins vorhanden
+        return false;
     }
 
     /**
@@ -154,13 +154,13 @@ class StatusBar extends DrawableObjects {
         let coinImagePath = this.COIN_BAR_IMAGES[this.resolveImageIndex(this.coinPercentage)];
         let coinImg = this.imageCache[coinImagePath];
         if (coinImg && coinImg.complete && coinImg.naturalWidth > 0) {
-            ctx.drawImage(coinImg, this.x, this.y + 60, this.width, this.height);
+            ctx.drawImage(coinImg, this.x, this.y + 47, this.width, this.height);
         }
 
         let bottleImagePath = this.BOTTLE_BAR_IMAGES[this.resolveImageIndex(this.bottlePercentage)];
         let bottleImg = this.imageCache[bottleImagePath];
         if (bottleImg && bottleImg.complete && bottleImg.naturalWidth > 0) {
-            ctx.drawImage(bottleImg, this.x, this.y + 120, this.width, this.height);
+            ctx.drawImage(bottleImg, this.x, this.y + 94, this.width, this.height);
         }
 
         if (this.drawCollision) {

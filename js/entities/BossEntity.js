@@ -280,6 +280,10 @@ class BossEntity extends ObjectEntity {
         this.lastHitTimeStamp = new Date().getTime();
         this.hitCount++;
         
+        if (window.menuManager) {
+            window.menuManager.getSoundManager().playSFX('BOSS_HIT');
+        }
+        
         let immediateAlertChance = this.energy <= 20 ? this.lowHealthChargeChance : (this.hitCount * this.chargeChanceIncrease);
         
         if (!this.isCharging && !this.isAlerting && this.world && this.world.character) {

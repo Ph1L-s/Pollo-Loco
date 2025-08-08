@@ -25,6 +25,10 @@ class CollisionManager {
         throwableObjects.forEach((bottle, bottleIndex) => {
             enemies.forEach((enemy, enemyIndex) => {
                 if (bottle.isColliding && bottle.isColliding(enemy)) {
+                    if (window.menuManager) {
+                        window.menuManager.getSoundManager().playSFX('BOTTLE_BREAK');
+                    }
+                    
                     if (enemy.constructor.name === 'BossEntity') {
                         enemy.hit(20);
                         

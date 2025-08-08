@@ -4,6 +4,7 @@ let input = new Input();
 let gameStarted = false;
 let gameOver = false;
 let showHitboxes = false;
+let menuManager;
 
 const GAME_OVER_IMAGE = [
     'assets/images/ui/9_intro_outro_screens/game_over/game_over.png'
@@ -17,16 +18,20 @@ const GAME_OVER_IMAGE = [
 function startGame() {
     if (gameStarted) return;
     
-    
     document.getElementById('startScreen').style.display = 'none';
     document.getElementById('gameCanvas').style.filter = 'none';
     
     gameOver = false;
     window.gameOver = false;
+    window.gameStarted = true;
 
     canvas = document.getElementById('gameCanvas');
     world = new World(canvas, input, createLevel1());
     window.world = world;
+    
+    if (menuManager) {
+        menuManager.getSoundManager().startBackgroundMusic();
+    }
     
     gameStarted = true;
 }
@@ -36,13 +41,13 @@ function startGame() {
  * @description cleans up current world, stops animations, clears canvas and reinitializes game
  */
 function restartGame() {
-    
     document.getElementById('gameOverScreen').style.display = 'none';
     document.getElementById('youWonScreen').style.display = 'none';
     
     gameStarted = false;
     gameOver = false;
     window.gameOver = false;
+    window.gameStarted = false;
     
     canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
@@ -81,9 +86,13 @@ function showStartScreen() {
  * @description stops animations, clears world, loads game over image with aspect ratio scaling
  */
 function showGameOver() {
-    
     gameOver = true;
     window.gameOver = true;
+    window.gameStarted = false;
+    
+    if (menuManager) {
+        menuManager.showGameOver();
+    }
     
     if (world) {
         if (world.character) {
@@ -96,38 +105,8 @@ function showGameOver() {
         window.world = null;
     }
     
-    canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    
-    ctx.fillStyle = 'hsla(0, 0%, 0%, 0.001)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    const gameOverImg = new Image();
-    gameOverImg.onload = function() {
-        
-        const canvasRatio = canvas.width / canvas.height;
-        const imageRatio = gameOverImg.width / gameOverImg.height;
-        
-        let drawWidth, drawHeight;
-        if (imageRatio > canvasRatio) {
-            drawWidth = canvas.width;
-            drawHeight = canvas.width / imageRatio;
-        } else {
-            drawHeight = canvas.height;
-            drawWidth = canvas.height * imageRatio;
-        }
-        
-        const x = (canvas.width - drawWidth) / 2;
-        const y = (canvas.height - drawHeight) / 2;
-        
-        ctx.drawImage(gameOverImg, x, y, drawWidth, drawHeight);
-        
-        document.getElementById('gameOverScreen').style.display = 'flex';
-    };
-    gameOverImg.onerror = function() {
-        document.getElementById('gameOverScreen').style.display = 'flex';
-    };
-    gameOverImg.src = GAME_OVER_IMAGE[0];
+    // Show HTML Game Over screen instead of canvas rendering
+    document.getElementById('gameOverScreen').style.display = 'flex';
 }
 
 window.showGameOver = showGameOver;
@@ -139,11 +118,10 @@ window.gameOver = gameOver;
  * @description sets up button click handlers and shows initial game screen on page load
  */
 document.addEventListener('DOMContentLoaded', function() {
-    
     showStartScreen();
     
-    const startButton = document.getElementById('startButton');
-    startButton.addEventListener('click', startGame);
+    menuManager = new MenuManager();
+    window.menuManager = menuManager;
     
     const restartButton = document.getElementById('restartButton');
     restartButton.addEventListener('click', restartGame);
@@ -164,11 +142,7 @@ document.addEventListener('keydown', (event) => {
     if (event.keyCode === 87 || event.keyCode === 38) input.UP = true;
     if (event.keyCode === 70) input.F = true;
     if (event.keyCode === 32) input.SPACE = true;
-    if (event.keyCode === 72 && world) {
-        showHitboxes = !showHitboxes;
-        window.showHitboxes = showHitboxes;
-        world.toggleCollisions(showHitboxes);
-    }
+    if (event.keyCode === 72) input.H = true;
 });
 
 /**
@@ -183,4 +157,5 @@ document.addEventListener('keyup', (event) => {
     if (event.keyCode === 87 || event.keyCode === 38) input.UP = false;
     if (event.keyCode === 70) input.F = false;
     if (event.keyCode === 32) input.SPACE = false;
+    if (event.keyCode === 72) input.H = false;
 });

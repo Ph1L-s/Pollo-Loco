@@ -78,9 +78,13 @@ canvas {
     width: 100%;
     height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-image: url('../assets/images/ui/9_intro_outro_screens/start/startscreen_1.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     z-index: 10;
 }
 
@@ -202,7 +206,7 @@ canvas {
     .game-container {
         gap: 15px;
     }
-    #startButton {
+    #startButton, .menu-button {
         font-size: 1.5rem;
         padding: 12px 30px;
     }
@@ -210,4 +214,187 @@ canvas {
         font-size: 1.5rem;
         padding: 12px 30px;
     }
+}
+
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 40px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 15px;
+    margin-top: 50px;
+}
+
+.menu-button {
+    font-family: 'Luckiest Guy', cursive;
+    font-size: 1.2rem;
+    padding: 12px 30px;
+    background-color: #4CAF50;
+    color: #FFF;
+    border: 3px solid #333;
+    border-radius: 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+    min-width: 200px;
+}
+
+.menu-button:hover {
+    background-color: #45A049;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+
+.menu-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.menu-button.muted {
+    background-color: #FF6B6B;
+}
+
+.menu-button.muted:hover {
+    background-color: #FF5252;
+}
+
+.volume-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.volume-label {
+    color: #FFD700;
+    font-family: 'Luckiest Guy', cursive;
+    font-size: 1.1rem;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.volume-slider {
+    width: 200px;
+    height: 8px;
+    background: #333;
+    border-radius: 4px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #FFD700;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #333;
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #FFD700;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #333;
+}
+
+.game-instructions {
+    background-color: rgba(0, 0, 0, 0.9);
+    color: #FFD700;
+    padding: 30px;
+    border-radius: 15px;
+    margin: 20px;
+    max-width: 600px;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+.game-instructions h3 {
+    font-family: 'Luckiest Guy', cursive;
+    color: #FFD700;
+    text-shadow: 2px 2px 0 #000;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.controls-section {
+    margin: 20px 0;
+}
+
+.controls-section h4 {
+    color: #4CAF50;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.controls-list {
+    list-style: none;
+    padding: 0;
+}
+
+.controls-list li {
+    margin: 8px 0;
+    padding: 5px 10px;
+    background-color: rgba(255, 215, 0, 0.1);
+    border-radius: 5px;
+}
+
+.key {
+    background-color: #333;
+    color: #FFD700;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.fullscreen-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #FFD700;
+    border: 2px solid #FFD700;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.fullscreen-button:hover {
+    background-color: #FFD700;
+    color: #000;
+}
+
+.fullscreen-active canvas {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    object-fit: contain;
+}
+
+.fullscreen-active body {
+    overflow: hidden;
+}
+
+.fullscreen-active #gameContainer {
+    width: 100vw;
+    height: 100vh;
+}
+
+.fullscreen-active .fullscreen-button {
+    top: 10px;
+    right: 10px;
 }

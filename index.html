@@ -45,6 +45,10 @@
     <script src="js/entities/Bottle.js"></script>
     <script src="js/entities/DroppedBottle.js"></script>
     <script src="js/entities/Coin.js"></script>
+    
+    <!-- Sound System -->
+    <script src="js/systems/SoundManager.js"></script>
+    <script src="js/systems/MenuManager.js"></script>
 
 
     <!-- Levels -->
@@ -65,16 +69,113 @@
     
     <div id="gameContainer">
         <canvas id="gameCanvas" width="720" height="480"></canvas>
+        <button class="fullscreen-button" id="fullscreenButton">⛶</button>
         <div id="startScreen">
-            <button id="startButton">START</button>
+            <div class="menu-container">
+                <button id="startButton" class="menu-button">🎮 START GAME</button>
+                
+                <div class="menu-buttons">
+                    <button id="guideButton" class="menu-button">📖 GUIDE</button>
+                    <button id="optionsButton" class="menu-button">⚙️ OPTIONS</button>
+                    <button id="instructionsButton" class="menu-button">❓ HOW TO PLAY</button>
+                </div>
+            </div>
+            
+            <!-- Options Panel -->
+            <div id="optionsPanel" class="game-instructions" style="display: none;">
+                <h3>⚙️ Game Options</h3>
+                
+                <div class="volume-container">
+                    <label class="volume-label" for="volumeSlider">Sound Volume</label>
+                    <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.20">
+                </div>
+                
+                <button id="muteButton" class="menu-button">🔊 SOUND ON</button>
+                
+                <button id="backToMenuFromOptions" class="menu-button">← BACK</button>
+            </div>
+            
+            <!-- Game Guide Panel -->
+            <div id="guidePanel" class="game-instructions" style="display: none;">
+                <h3>El Pollo Loco Guide</h3>
+                
+                <div class="controls-section">
+                    <h4>Objective</h4>
+                    <p>Help Pepe defeat the boss chicken and collect items</p>
+                    
+                    <h4>Movement Controls</h4>
+                    <p>Arrow Keys LEFT/RIGHT - Move character</p>
+                    <p>Arrow Key UP or SPACE - Jump</p>
+                    <p>WASD Keys - Alternative movement (W/Space jump, A/D move)</p>
+                    
+                    <h4>Action Controls</h4>
+                    <p>D Key - Throw bottles at enemies</p>
+                    <p>H Key - Toggle collision boxes (debug mode)</p>
+                    
+                    <h4>Gameplay</h4>
+                    <p>Collect bottles to use as weapons</p>
+                    <p>Jump on enemies to defeat them</p>
+                    <p>Watch your health and item counters</p>
+                    <p>Defeat the boss to win</p>
+                </div>
+                
+                <button id="backToMenuFromGuide" class="menu-button">BACK</button>
+            </div>
+            
+            <div id="gameInstructions" class="game-instructions" style="display: none;">
+                <h3>🐔 How to Play El Pollo Loco</h3>
+                
+                <div class="controls-section">
+                    <h4>🎮 Controls</h4>
+                    <ul class="controls-list">
+                        <li><span class="key">←→</span>Move left/right</li>
+                        <li><span class="key">SPACE</span>Jump on enemies or over obstacles</li>
+                        <li><span class="key">F</span>Throw bottles at enemies</li>
+                    </ul>
+                </div>
+
+                <div class="controls-section">
+                    <h4>🎯 Objectives</h4>
+                    <ul class="controls-list">
+                        <li>🪙 Collect coins scattered throughout the world</li>
+                        <li>🍾 Gather bottles to use as projectiles</li>
+                        <li>🐓 Defeat normal chickens by jumping on them or throwing bottles</li>
+                        <li>🐔 Face the boss chicken with special attack patterns</li>
+                        <li>🏆 Win by defeating the boss chicken!</li>
+                    </ul>
+                </div>
+
+                <div class="controls-section">
+                    <h4>💡 Tips</h4>
+                    <ul class="controls-list">
+                        <li>🎯 Jump on enemies from above for safe kills</li>
+                        <li>⚡ Boss gets more aggressive when damaged</li>
+                        <li>💎 Enemies drop bottles when defeated (20% chance)</li>
+                        <li>🔔 Watch for boss alert animation before charge attacks</li>
+                        <li>❤️ Avoid side collisions with enemies to prevent damage</li>
+                    </ul>
+                </div>
+
+                <button id="backToMenuButton" class="menu-button">← BACK TO MENU</button>
+            </div>
         </div>
         <div id="gameOverScreen" style="display: none;">
             <img src="assets/images/ui/9_intro_outro_screens/game_over/game_over.png" alt="Game Over" style="width: 400px; height: auto;">
-            <button id="restartButton">RESTART</button>
+            <div class="menu-buttons">
+                <button id="restartButton" class="menu-button">🔄 RESTART</button>
+                <button id="gameOverGuideButton" class="menu-button">📖 GUIDE</button>
+                <button id="gameOverOptionsButton" class="menu-button">⚙️ OPTIONS</button>
+                <button id="gameOverMenuButton" class="menu-button">🏠 MAIN MENU</button>
+            </div>
         </div>
         <div id="youWonScreen" style="display: none;">
             <img src="assets/images/ui/You won, you lost/you_won.png" alt="You Won!" style="width: 400px; height: auto;">
-            <button id="youWonRestartButton">RESTART</button>
+            <div class="menu-buttons">
+                <button id="youWonRestartButton" class="menu-button">🔄 RESTART</button>
+                <button id="youWonGuideButton" class="menu-button">📖 GUIDE</button>
+                <button id="youWonOptionsButton" class="menu-button">⚙️ OPTIONS</button>
+                <button id="youWonMenuButton" class="menu-button">🏠 MAIN MENU</button>
+            </div>
         </div>
     </div>
     
