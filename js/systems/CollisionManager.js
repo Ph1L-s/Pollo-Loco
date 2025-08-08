@@ -175,17 +175,23 @@ class CollisionManager {
      * @param {Enemy} enemy - enemy object determining knockback direction
      */
     applyKnockback(player, enemy) {
-        let knockbackForce = 15;
+        let knockbackForce = 12;
         
         player.isKnockedBack = true;
         
         if (player.x < enemy.x) {
-            if (player.x > 50) {
+            if (player.x > 100) {
                 player.speedX = -knockbackForce;
+            } else {
+                player.x = 100; 
+                player.speedX = 0;
             }
         } else {
-            if (player.x < 4000) {
+            if (player.x < 3900) {
                 player.speedX = knockbackForce;
+            } else {
+                player.x = 3900; 
+                player.speedX = 0;
             }
         }
     }

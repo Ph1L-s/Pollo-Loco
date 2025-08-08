@@ -201,7 +201,16 @@ class Player extends ObjectEntity {
                 }
             }
 
-            this.world.camera_x = -this.x + 100;
+
+            let targetCameraX = Math.round(-this.x + 100);
+            
+            if (this.isKnockedBack) {
+                let lerp = 0.05; 
+                this.world.camera_x = Math.round(this.world.camera_x + (targetCameraX - this.world.camera_x) * lerp);
+            } else {
+                let lerp = 0.15; 
+                this.world.camera_x = Math.round(this.world.camera_x + (targetCameraX - this.world.camera_x) * lerp);
+            }
         }, 1000 / 64);
     }
 
