@@ -26,11 +26,8 @@ class CollisionManager {
             enemies.forEach((enemy, enemyIndex) => {
                 if (bottle.isColliding && bottle.isColliding(enemy)) {
                     if (enemy.constructor.name === 'BossEntity') {
-                        // Boss takes damage instead of being removed
                         enemy.hit(20);
-                        console.log(`Boss hit! Energy: ${enemy.energy}`);
                         
-                        // Update boss status bar if callback provided
                         if (this.onBossHit) {
                             this.onBossHit(enemy.energy);
                         }
@@ -39,7 +36,6 @@ class CollisionManager {
                             enemy.startFalling();
                         }
                     } else {
-                        // Normal enemies are removed
                         if (enemy.startFalling) {
                             enemy.startFalling();
                         }
@@ -109,12 +105,11 @@ class CollisionManager {
                 } else {
                     let shouldTakeDamage = this.handleSideCollision(player, enemy);
                     if (shouldTakeDamage) {
-                        // Boss-spezifische Behandlung
                         if (enemy.constructor.name === 'BossEntity') {
-                            player.hit(50); // Boss verursacht 50 Schaden
+                            player.hit(30);
                             this.applyKnockback(player, enemy);
                         } else {
-                            player.hit(20); // Normale Gegner verursachen 20 Schaden
+                            player.hit(20);
                         }
                         return;
                     }
@@ -133,8 +128,14 @@ class CollisionManager {
     getCollisionType(player, enemy) {
         let playerBottom = player.y + player.height;
         let enemyTop = enemy.y;
+        
+        let enemyLeft = enemy.x - (enemy.width * 0.15);
+        let enemyRight = enemy.x + enemy.width + (enemy.width * 0.15);
+        let playerCenterX = player.x + (player.width / 2);
+        
+        let isOverEnemy = playerCenterX >= enemyLeft && playerCenterX <= enemyRight;
 
-        if (player.speedY < 0 && playerBottom < enemyTop + 20) {
+        if (player.speedY < 0 && playerBottom < enemyTop + 20 && isOverEnemy) {
             return 'top';
         } else {
             return 'side';

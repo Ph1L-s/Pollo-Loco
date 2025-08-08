@@ -50,7 +50,6 @@ class World {
         this.renderer = new Renderer(canvas);
         this.collisionManager = new CollisionManager();
         
-        // Set boss hit callback for status bar updates
         if (this.bossStatusBar) {
             this.collisionManager.onBossHit = (bossEnergy) => {
                 this.bossStatusBar.setPercentage(bossEnergy);
@@ -60,6 +59,7 @@ class World {
         this.setWorld();
         const collisionObjects = [this.character];
         for(let enemy of this.enemies) {
+            enemy.world = this;
             collisionObjects.push(enemy);
         }
         for(let bottle of this.bottles) {
@@ -79,19 +79,36 @@ class World {
      * @description spawns 5 bottles spaced 400 units apart horizontally for player collection
      */
     spawnBottles() {
-        for (let bottleIndex = 0; bottleIndex < 8; bottleIndex++) {
-            let x = 400 + Math.random() * 3200; // Zufällig über gesamte Spielfläche verteilt
-            let y = 370; // Näher zum Boden
+        for (let bottleIndex = 0; bottleIndex < 6; bottleIndex++) {
+            let x = 400 + Math.random() * 3200;
+            let y = 370;
             this.bottles.push(new Bottle(x, y));
         }
     }
 
+    /**
+     * @summary creates collectible coins at random positions across the level
+     * @description spawns 15 coins at varying heights for player collection and scoring
+     */
     spawnCoins() {
         for (let coinIndex = 0; coinIndex < 15; coinIndex++) {
-            let x = 400 + Math.random() * 3200; // Zufällig über gesamte Spielfläche verteilt
-            let y = 200 + Math.random() * 150; // Random zwischen 200-350 (verschiedene Höhen)
+            let x = 400 + Math.random() * 3200;
+            let y = 200 + Math.random() * 150;
             this.coins.push(new Coin(x, y));
         }
+    }
+
+    /**
+     * @summary spawns dropped bottle at enemy death location
+     * @description creates collectible bottle at specified position with fade-in effect
+     * @param {number} x - x coordinate for bottle spawn
+     * @param {number} y - y coordinate for bottle spawn
+     */
+    spawnDroppedBottle(x, y) {
+        let droppedBottle = new DroppedBottle(x - 20, 370);
+        droppedBottle.isVisible = true;
+        this.bottles.push(droppedBottle);
+        
     }
 
     /**
@@ -102,6 +119,10 @@ class World {
         this.character.world = this;
     }
 
+    /**
+     * @summary starts main game loop handling collisions and game state updates
+     * @description runs collision detection, object cleanup, and collection checks at 64ms intervals
+     */
     run() {
         setInterval(() => {
             if (!this.enemies || this.character.isDead()) return;
@@ -130,12 +151,16 @@ class World {
             this.lastThrowableObject = new Date().getTime();
             this.bottlePercentage -= 20;
             this.statusBar.setBottlePercentage(this.bottlePercentage);
-            console.log(`Bottle thrown! Percentage: ${this.bottlePercentage}`);
             
             this.input.F = false; 
         }
     }
 
+    /**
+     * @summary checks if enough time has passed since last bottle throw
+     * @description enforces 500ms cooldown between bottle throws to prevent spam
+     * @returns {boolean} true if player can throw another bottle
+     */
     checkLastThrowenObjectTime(){
         return new Date().getTime() - this.lastThrowableObject > 500;
     }
@@ -159,19 +184,21 @@ class World {
                 bottle.collect();
                 this.bottlePercentage += 20;
                 this.statusBar.setBottlePercentage(this.bottlePercentage);
-                console.log(`Bottle collected! Percentage: ${this.bottlePercentage}`);
                 this.bottles.splice(bottleIndex, 1);
             }
         });
     }
 
+    /**
+     * @summary detects and handles coin pickup by player character
+     * @description checks collision with coins, marks as collected, updates status bar with percentage
+     */
     checkCoinCollection() {
         this.coins.forEach((coin, coinIndex) => {
             if (!coin.isCollected() && this.isColliding(this.character, coin)) {
                 coin.collect();
-                this.coinPercentage = Math.min(100, this.coinPercentage + (100 / 15)); // 15 coins = 100%
+                this.coinPercentage = Math.min(100, this.coinPercentage + (100 / 15));
                 this.statusBar.setCoinPercentage(this.coinPercentage);
-                console.log(`Coin collected! Percentage: ${this.coinPercentage}`);
                 this.coins.splice(coinIndex, 1);
             }
         });
@@ -207,12 +234,10 @@ class World {
                         bottle.speedX = 0;
                         bottle.speedY = 0;
                         
-                        // Boss braucht mehrere Treffer
                         if (enemy.constructor.name === 'BossEntity') {
                             enemy.hit(20);
-                            console.log(`Boss hit! Energy: ${enemy.energy}`);
                         } else {
-                            enemy.hit(100); // Normale Enemies sterben sofort
+                            enemy.hit(100);
                         }
                     }
                 });
@@ -236,19 +261,15 @@ class World {
      */
     draw() {
         if (window.gameOver) {
-            console.log('World draw stopped - game over');
             return;
         }
         
         this.renderer.setCameraX(this.camera_x);
         
-        // Update boss status bar position (only if boss is alive)
         if (this.boss && this.bossStatusBar && !this.boss.isDead()) {
             this.bossStatusBar.updatePosition(this.boss.x, this.boss.y);
         } else if (this.boss && this.boss.isDead()) {
-            // Hide boss status bar when boss is dead
             this.bossStatusBar = null;
-            // Check if boss has fallen off screen to trigger win screen
             if (this.boss.shouldRemove) {
                 this.showYouWonScreen();
             }
@@ -297,6 +318,11 @@ class World {
      * @description shows or hides collision boxes for debugging collision detection
      * @param {boolean} show - whether to show or hide collision boxes
      */
+    /**
+     * @summary toggles collision visualization for debugging purposes
+     * @description shows or hides collision boxes for debugging collision detection
+     * @param {boolean} show - whether to show or hide collision boxes
+     */
     toggleCollisions(show) {
         this.collisionManager.toggleCollisionDisplay(show);
         this.toggleCollision(show, [this.character, ...this.enemies]);
@@ -321,7 +347,6 @@ class World {
      * @description shows victory screen with you_won image and restart button
      */
     showYouWonScreen() {
-        console.log('You won! Boss defeated!');
         window.gameOver = true;
         document.getElementById('youWonScreen').style.display = 'flex';
         document.getElementById('gameCanvas').style.filter = 'blur(5px)';

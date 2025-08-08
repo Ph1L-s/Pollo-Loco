@@ -15,6 +15,9 @@ class ObjectEntity extends DrawableObjects {
     currentAnimationSet = null;
     energy = 100;
     lastHit = 0;
+    isVisible = false;
+    alpha = 0;
+    fadeSpeed = 0.05;
 
     /**
      * @summary renders optimized collision boundary with color coding
@@ -109,7 +112,6 @@ class ObjectEntity extends DrawableObjects {
         
         if (this.energy <= 0) {
             this.energy = 0;
-            console.log('player dead!');
         }
         
     }
@@ -159,7 +161,6 @@ class ObjectEntity extends DrawableObjects {
             if (this.speedX !== 0) {
                 this.x += this.speedX;
                 
-                // Map boundaries for Player
                 if (this.constructor.name === 'Player') {
                     if (this.x < 50) {
                         this.x = 50;
@@ -186,7 +187,7 @@ class ObjectEntity extends DrawableObjects {
             if (this.constructor.name === 'Player' && this.isKnockedBack && !this.isAboveGround() && this.speedY <= 0 && this.speedX === 0) {
                 this.isKnockedBack = false;
             }
-        }, 16); // Optimiert: 60 FPS statt 64 FPS
+        }, 16);
     }
 
     /**
@@ -220,9 +221,7 @@ class ObjectEntity extends DrawableObjects {
      */
     playAnimation(images, interval = 100) {
         if (this.constructor.name === 'Player') {
-            console.log('Player animation:', images.length, 'frames');
         } else if (this.constructor.name === 'Enemy' || this.constructor.name === 'BossEntity') {
-            console.log(`${this.constructor.name} animation started`);
         }
         
         this.stopAnimation();
@@ -233,7 +232,6 @@ class ObjectEntity extends DrawableObjects {
             if (this.imageCache[path]) {
                 this.img = this.imageCache[path];
             } else {
-                console.log('Missing from cache:', path);
             }
             this.currentImage++;
         }, interval);
@@ -247,6 +245,54 @@ class ObjectEntity extends DrawableObjects {
         if (this.animationInterval) {
             clearInterval(this.animationInterval);
             this.animationInterval = null;
+        }
+    }
+
+    /**
+     * @summary checks if entity is within camera viewport for culling
+     * @description determines if entity should be rendered based on camera position
+     * @param {number} cameraX - current camera x offset
+     * @param {number} viewportWidth - width of visible area (default 720)
+     * @returns {boolean} true if entity is in visible area
+     */
+    isInViewport(cameraX, viewportWidth = 720) {
+        let screenX = this.x + cameraX;
+        return screenX + this.width > -100 && screenX < viewportWidth + 100;
+    }
+
+    /**
+     * @summary updates visibility and alpha for fade effects
+     * @description handles fade-in when entering viewport and cleanup when off-screen
+     * @param {number} cameraX - current camera x offset
+     */
+    updateVisibility(cameraX) {
+        let inViewport = this.isInViewport(cameraX);
+        
+        if (inViewport && !this.isVisible) {
+            this.isVisible = true;
+        }
+        
+        if (this.isVisible) {
+            if (inViewport) {
+                this.alpha = Math.min(1, this.alpha + this.fadeSpeed);
+            } else {
+                this.alpha = Math.max(0, this.alpha - this.fadeSpeed * 2);
+                
+                if (this.alpha === 0 && !this.isInViewport(cameraX, 1440)) {
+                    this.cleanup();
+                }
+            }
+        }
+    }
+
+    /**
+     * @summary cleans up entity resources when off-screen
+     * @description stops animations and marks for removal
+     */
+    cleanup() {
+        this.stopAnimation();
+        if (this.constructor.name !== 'Player') {
+            this.shouldRemove = true;
         }
     }
 

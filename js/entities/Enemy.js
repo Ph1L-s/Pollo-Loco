@@ -39,7 +39,7 @@ class Enemy extends ObjectEntity {
         this.loadImages(this.IMAGES_WALKING_ENEMY);
         this.loadImages(this.IMAGES_DEAD);
 
-        this.x = 400 + Math.random() * 3200; // Besser verteilt zwischen 400-3600
+        this.x = 400 + Math.random() * 3200;
         this.speed = 0.22 + Math.random() * 0.51;
         this.startMovement();
         this.startWalkingAnimation();
@@ -64,17 +64,35 @@ class Enemy extends ObjectEntity {
     }
 
     /**
-     * @summary initiates enemy death sequence with upward bounce and falling
-     * @description marks as dead, applies initial upward velocity, stops walking animation
+     * @summary starts walking animation loop for enemy
+     * @description begins continuous walking sprite animation at 200ms intervals
      */
     startWalkingAnimation() {
         this.playAnimation(this.IMAGES_WALKING_ENEMY, 200);
     }
 
+    /**
+     * @summary initiates enemy death sequence with upward bounce and falling
+     * @description marks as dead, applies initial upward velocity, stops walking animation, triggers 20% bottle drop chance
+     */
     startFalling() {
         this.isDead = true;
         this.fallSpeed = -8;
         this.stopAnimation();
         this.img = this.imageCache[this.IMAGES_DEAD[0]];
+        
+        if (Math.random() < 0.2) {
+            this.dropBottle();
+        }
+    }
+
+    /**
+     * @summary handles bottle drop mechanics when enemy dies
+     * @description notifies world to spawn dropped bottle at enemy center position
+     */
+    dropBottle() {
+        if (this.world && this.world.spawnDroppedBottle) {
+            this.world.spawnDroppedBottle(this.x + this.width/2, this.y + this.height/2);
+        }
     }
 }

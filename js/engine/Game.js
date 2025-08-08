@@ -9,7 +9,6 @@ const GAME_OVER_IMAGE = [
     'assets/images/ui/9_intro_outro_screens/game_over/game_over.png'
 ];
 
-console.log('Game.js loaded');
 
 /**
  * @summary initializes and starts the main game session
@@ -18,7 +17,6 @@ console.log('Game.js loaded');
 function startGame() {
     if (gameStarted) return;
     
-    console.log('Starting game...');
     
     document.getElementById('startScreen').style.display = 'none';
     document.getElementById('gameCanvas').style.filter = 'none';
@@ -31,7 +29,6 @@ function startGame() {
     window.world = world;
     
     gameStarted = true;
-    console.log('Game started!');
 }
 
 /**
@@ -39,7 +36,6 @@ function startGame() {
  * @description cleans up current world, stops animations, clears canvas and reinitializes game
  */
 function restartGame() {
-    console.log('Restarting game...');
     
     document.getElementById('gameOverScreen').style.display = 'none';
     document.getElementById('youWonScreen').style.display = 'none';
@@ -85,8 +81,6 @@ function showStartScreen() {
  * @description stops animations, clears world, loads game over image with aspect ratio scaling
  */
 function showGameOver() {
-    console.log('Game Over!');
-    console.log('GAME_OVER_IMAGE available?', typeof GAME_OVER_IMAGE);
     
     gameOver = true;
     window.gameOver = true;
@@ -104,15 +98,12 @@ function showGameOver() {
     
     canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    console.log('Canvas:', canvas);
     
     ctx.fillStyle = 'hsla(0, 0%, 0%, 0.001)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    console.log('Black background drawn');
     
     const gameOverImg = new Image();
     gameOverImg.onload = function() {
-        console.log('Game Over image loaded:', gameOverImg.width, 'x', gameOverImg.height);
         
         const canvasRatio = canvas.width / canvas.height;
         const imageRatio = gameOverImg.width / gameOverImg.height;
@@ -130,15 +121,12 @@ function showGameOver() {
         const y = (canvas.height - drawHeight) / 2;
         
         ctx.drawImage(gameOverImg, x, y, drawWidth, drawHeight);
-        console.log('Game Over image drawn at:', x, y, 'size:', drawWidth, 'x', drawHeight);
         
         document.getElementById('gameOverScreen').style.display = 'flex';
     };
     gameOverImg.onerror = function() {
-        console.log('Failed to load Game Over image');
         document.getElementById('gameOverScreen').style.display = 'flex';
     };
-    console.log('Loading image:', GAME_OVER_IMAGE[0]);
     gameOverImg.src = GAME_OVER_IMAGE[0];
 }
 
@@ -151,8 +139,6 @@ window.gameOver = gameOver;
  * @description sets up button click handlers and shows initial game screen on page load
  */
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Page loaded - showing start screen');
-    console.log('Current world state:', window.world);
     
     showStartScreen();
     
@@ -182,7 +168,6 @@ document.addEventListener('keydown', (event) => {
         showHitboxes = !showHitboxes;
         window.showHitboxes = showHitboxes;
         world.toggleCollisions(showHitboxes);
-        console.log('Hitboxes turned', showHitboxes ? 'ON' : 'OFF');
     }
 });
 

@@ -122,7 +122,6 @@ class Player extends ObjectEntity {
             
             if (this.isDead()) {
                 if (!this.deathAnimationStarted) {
-                    console.log('starting death fall');
                     this.startDeathFall();
                     this.deathAnimationStarted = true;
                     this.currentAnimationSet = 'dead';
@@ -219,7 +218,6 @@ class Player extends ObjectEntity {
      * @description loads death sprite, applies downward velocity, triggers game over when off screen
      */
     startDeathFall() {
-        console.log('startDeathFall() called');
         this.stopAnimation();
         
         this.loadImage(this.IMAGES_DEAD_PLAYER[0]);
@@ -232,7 +230,6 @@ class Player extends ObjectEntity {
             this.deathFallSpeed += 0.3; 
             if (this.y > 600) {
                 clearInterval(this.deathFallInterval);
-                console.log('Player fell out of world');
                 
                 setTimeout(() => {
                     showGameOver();
@@ -252,10 +249,8 @@ class Player extends ObjectEntity {
         }
         this.lastHitTimeStamp = new Date().getTime();
         
-        console.log(`Player hit! Damage: ${damage}, Energy: ${this.energy}`);
         
         if (this.energy <= 0) {
-            console.log('player dead!');
         }
     }
 

@@ -47,6 +47,20 @@ class Renderer {
             return; 
         }
 
+        if (mo.updateVisibility) {
+            mo.updateVisibility(this.camera_x);
+            
+            if (!mo.isVisible || mo.alpha === 0) {
+                return;
+            }
+        }
+
+        let needsAlpha = mo.alpha !== undefined && mo.alpha < 1;
+        if (needsAlpha) {
+            this.ctx.save();
+            this.ctx.globalAlpha = mo.alpha;
+        }
+
         if (mo.otherDirection) {
             this.ctx.save();
             this.ctx.translate(mo.x + mo.width, 0);
@@ -55,6 +69,10 @@ class Renderer {
             this.ctx.restore();
         } else {
             this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
+        }
+        
+        if (needsAlpha) {
+            this.ctx.restore();
         }
         
         if (mo.drawCollision) {
@@ -97,19 +115,16 @@ class Renderer {
         this.addObjectsToMap(bottles);
         this.addObjectsToMap(coins);
         
-        // Render boss status bar with camera transform
         if (bossStatusBar) {
             this.addToMap(bossStatusBar);
         }
         
         if (collisionManager && collisionManager.showCollisions) {
-            console.log('Renderer drawing collision boxes');
             character.drawCollision(this.ctx);
             enemies.forEach(enemy => enemy.drawCollision(this.ctx));
         }
         
         if (window.showHitboxes) {
-            console.log('EMERGENCY: Drawing test hitboxes');
             this.ctx.save();
             this.ctx.strokeStyle = 'lime';
             this.ctx.lineWidth = 3;
