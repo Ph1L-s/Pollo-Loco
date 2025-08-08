@@ -258,10 +258,10 @@ class MenuManager {
         const muteButton = document.getElementById('muteButton');
         if (muteButton) {
             if (isMuted) {
-                muteButton.textContent = '🔇 SOUND OFF';
+                muteButton.textContent = 'SOUND OFF';
                 muteButton.classList.add('muted');
             } else {
-                muteButton.textContent = '🔊 SOUND ON';
+                muteButton.textContent = 'SOUND ON';
                 muteButton.classList.remove('muted');
             }
         }
