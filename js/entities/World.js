@@ -124,8 +124,8 @@ class World {
      * @description runs collision detection, object cleanup, and collection checks at 64ms intervals
      */
     run() {
-        setInterval(() => {
-            if (!this.enemies || this.character.isDead()) return;
+        this.gameInterval = setInterval(() => {
+            if (!this.enemies || this.character.isDead() || window.gameOver) return;
             this.checkCollisions();
             this.checkThrowObjects();
             this.checkBottleCollection();
@@ -133,6 +133,17 @@ class World {
             this.checkBottleEnemyCollisions();
             this.cleanupThrowableObjects();
         }, 64);
+    }
+
+    /**
+     * @summary stops the main game loop
+     * @description clears game interval to stop all game logic updates
+     */
+    stopGameLoop() {
+        if (this.gameInterval) {
+            clearInterval(this.gameInterval);
+            this.gameInterval = null;
+        }
     }
 
     /**
@@ -297,7 +308,10 @@ class World {
             this.collisionManager,
             this.bossStatusBar
         );
-        requestAnimationFrame(() => this.draw());
+        
+        if (!window.gameOver) {
+            requestAnimationFrame(() => this.draw());
+        }
     }
 
     /**
@@ -362,6 +376,8 @@ class World {
             window.menuManager.getSoundManager().playSFX('BOSS_DIE');
         }
         window.gameOver = true;
+        window.gameStarted = false;
+        this.stopGameLoop();
         document.getElementById('youWonScreen').style.display = 'flex';
         document.getElementById('gameCanvas').style.filter = 'blur(5px)';
     }

@@ -5,6 +5,7 @@ let gameStarted = false;
 let gameOver = false;
 let showHitboxes = false;
 let menuManager;
+let mobileControls;
 
 const GAME_OVER_IMAGE = [
     'assets/images/ui/9_intro_outro_screens/game_over/game_over.png'
@@ -131,31 +132,17 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /**
- * @summary handles keyboard input for game controls and debug features
- * @description maps wasd/arrow keys for movement, space for jump, f for action, h for hitbox toggle
- * @param {KeyboardEvent} event - keyboard event containing keyCode
+ * @summary initializes mobile controls and input systems
+ * @description sets up touch controls for mobile devices and fullscreen functionality
  */
-document.addEventListener('keydown', (event) => {
-    if (event.keyCode === 68 || event.keyCode === 39) input.RIGHT = true;
-    if (event.keyCode === 65 || event.keyCode === 37) input.LEFT = true;
-    if (event.keyCode === 83 || event.keyCode === 40) input.DOWN = true;
-    if (event.keyCode === 87 || event.keyCode === 38) input.UP = true;
-    if (event.keyCode === 70) input.F = true;
-    if (event.keyCode === 32) input.SPACE = true;
-    if (event.keyCode === 72) input.H = true;
-});
+function initMobileControls() {
+    mobileControls = new MobileControls(input);
+}
 
 /**
- * @summary handles keyboard input release for smooth movement controls
- * @description resets input flags when keys are released to stop movement
- * @param {KeyboardEvent} event - keyboard event containing keyCode
+ * @summary initializes mobile controls when DOM is ready
+ * @description ensures mobile control system is available after page load
  */
-document.addEventListener('keyup', (event) => {
-    if (event.keyCode === 68 || event.keyCode === 39) input.RIGHT = false;
-    if (event.keyCode === 65 || event.keyCode === 37) input.LEFT = false;
-    if (event.keyCode === 83 || event.keyCode === 40) input.DOWN = false;
-    if (event.keyCode === 87 || event.keyCode === 38) input.UP = false;
-    if (event.keyCode === 70) input.F = false;
-    if (event.keyCode === 32) input.SPACE = false;
-    if (event.keyCode === 72) input.H = false;
+document.addEventListener('DOMContentLoaded', function() {
+    initMobileControls();
 });

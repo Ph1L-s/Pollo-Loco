@@ -49,6 +49,7 @@
     <!-- Sound System -->
     <script src="js/systems/SoundManager.js"></script>
     <script src="js/systems/MenuManager.js"></script>
+    <script src="js/systems/MobileControls.js"></script>
 
 
     <!-- Levels -->
@@ -70,6 +71,26 @@
     <div id="gameContainer">
         <canvas id="gameCanvas" width="720" height="480"></canvas>
         <button class="fullscreen-button" id="fullscreenButton">⛶</button>
+        
+        <!-- Mobile Touch Controls -->
+        <div class="mobile-controls">
+            <div class="mobile-control-group">
+                <button class="mobile-control-button" id="mobileLeft">
+                    ◄
+                </button>
+                <button class="mobile-control-button" id="mobileRight">
+                    ►
+                </button>
+            </div>
+            <div class="mobile-control-group">
+                <button class="mobile-control-button" id="mobileJump">
+                    ↑
+                </button>
+                <button class="mobile-control-button" id="mobileThrow">
+                    ●
+                </button>
+            </div>
+        </div>
         <div id="startScreen">
             <div class="menu-container">
                 <button id="startButton" class="menu-button">START GAME</button>
@@ -155,5 +176,13 @@
         </div>
     </div>
     
+    <!-- Landscape Mode Warning for Mobile -->
+    <div class="landscape-warning">
+        <h2>Bitte drehe dein Gerät</h2>
+        <p>Dieses Spiel kann nur im Querformat gespielt werden.</p>
+        <div class="rotate-icon">↻</div>
+    </div>
+    
+    <script src="js/main.js"></script>
 </body>
 </html>

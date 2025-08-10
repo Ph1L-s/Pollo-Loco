@@ -103,11 +103,7 @@ class BossEntity extends ObjectEntity {
     startBossLogic() {
         setInterval(() => {
             if (this.isDead()) {
-                if (this.currentAnimationSet !== 'dead') {
-                    this.stopAnimation();
-                    this.playAnimation(this.IMAGES_DEAD, 200);
-                    this.currentAnimationSet = 'dead';
-                }
+                return;
             } else if (this.isHurt()) {
                 if (this.currentAnimationSet !== 'hurt') {
                     this.stopAnimation();
@@ -330,13 +326,13 @@ class BossEntity extends ObjectEntity {
 
     /**
      * @summary initiates boss death fall sequence
-     * @description sets death state, applies upward velocity, switches to death sprite, stops animations
+     * @description sets death state, applies upward velocity, starts death animation sequence
      */
     startFalling() {
         this.energy = 0;
         this.fallSpeed = -8;
         this.stopAnimation();
-        this.img = this.imageCache[this.IMAGES_DEAD[0]];
+        this.playAnimationOnce(this.IMAGES_DEAD, 400);
         this.currentAnimationSet = 'dead';
     }
 }

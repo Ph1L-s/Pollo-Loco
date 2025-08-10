@@ -238,6 +238,28 @@ class ObjectEntity extends DrawableObjects {
     }
 
     /**
+     * @summary plays animation sequence only once without looping
+     * @description runs animation frames once and stays on final frame
+     * @param {Array<string>} images - array of image paths for animation frames
+     * @param {number} interval - milliseconds between frame changes (default 300)
+     */
+    playAnimationOnce(images, interval = 300) {
+        this.stopAnimation();
+        this.currentImage = 0;
+        this.animationInterval = setInterval(() => {
+            if (this.currentImage < images.length) {
+                let path = images[this.currentImage];
+                if (this.imageCache[path]) {
+                    this.img = this.imageCache[path];
+                }
+                this.currentImage++;
+            } else {
+                this.stopAnimation();
+            }
+        }, interval);
+    }
+
+    /**
      * @summary stops currently running animation sequence
      * @description clears animation interval and resets animation state
      */
@@ -268,17 +290,16 @@ class ObjectEntity extends DrawableObjects {
     updateVisibility(cameraX) {
         let inViewport = this.isInViewport(cameraX);
         
-        if (inViewport && !this.isVisible) {
+        if (inViewport) {
             this.isVisible = true;
-        }
-        
-        if (this.isVisible) {
-            if (inViewport) {
-                this.alpha = Math.min(1, this.alpha + this.fadeSpeed);
-            } else {
-                this.alpha = Math.max(0, this.alpha - this.fadeSpeed * 2);
-                
-                if (this.alpha === 0 && !this.isInViewport(cameraX, 1440)) {
+            this.alpha = Math.min(1, this.alpha + this.fadeSpeed);
+        } else if (this.isVisible) {
+            this.alpha = Math.max(0, this.alpha - this.fadeSpeed * 2);
+            
+            if (this.alpha === 0) {
+                if (!this.canBeRemoved()) {
+                    this.isVisible = false;
+                } else if (!this.isInViewport(cameraX, 1440)) {
                     this.cleanup();
                 }
             }
@@ -286,12 +307,49 @@ class ObjectEntity extends DrawableObjects {
     }
 
     /**
+     * @summary determines if entity can be safely removed from game
+     * @description checks if entity is disposable (not boss, not living enemies, etc.)
+     * @returns {boolean} true if entity can be removed
+     */
+    canBeRemoved() {
+        const entityType = this.constructor.name;
+        
+        if (entityType === 'Player') return false;
+        if (entityType === 'BossEntity' && !this.isEntityDead()) return false;
+        if ((entityType === 'Enemy' || entityType === 'SmallEnemy') && !this.isEntityDead()) return false;
+        
+        if (entityType === 'ThrowableObject') return true;
+        if (entityType === 'Bottle') return true;
+        if (entityType === 'Coin') return true;
+        if (entityType === 'DroppedBottle') return true;
+        
+        if ((entityType === 'Enemy' || entityType === 'SmallEnemy') && this.isEntityDead()) return true;
+        if (entityType === 'BossEntity' && this.isEntityDead()) return true;
+        
+        if (entityType === 'BackgroundObjects') return false;
+        
+        return false;
+    }
+
+    /**
+     * @summary safe wrapper to check if entity is dead
+     * @description checks for isDead method existence before calling to prevent runtime errors
+     * @returns {boolean} true if entity is dead, false if alive or method not available
+     */
+    isEntityDead() {
+        if (typeof this.isDead === 'function') {
+            return this.isDead();
+        }
+        return false;
+    }
+
+    /**
      * @summary cleans up entity resources when off-screen
-     * @description stops animations and marks for removal
+     * @description stops animations and marks for removal only if allowed
      */
     cleanup() {
         this.stopAnimation();
-        if (this.constructor.name !== 'Player') {
+        if (this.canBeRemoved()) {
             this.shouldRemove = true;
         }
     }
