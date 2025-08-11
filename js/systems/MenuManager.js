@@ -27,18 +27,15 @@ class MenuManager {
         const backToMenuButton = document.getElementById('backToMenuButton');
         const fullscreenButton = document.getElementById('fullscreenButton');
         
-        // New menu buttons
         const guideButton = document.getElementById('guideButton');
         const optionsButton = document.getElementById('optionsButton');
         const backToMenuFromGuide = document.getElementById('backToMenuFromGuide');
         const backToMenuFromOptions = document.getElementById('backToMenuFromOptions');
         
-        // Game Over screen buttons
         const gameOverGuideButton = document.getElementById('gameOverGuideButton');
         const gameOverOptionsButton = document.getElementById('gameOverOptionsButton');
         const gameOverMenuButton = document.getElementById('gameOverMenuButton');
         
-        // You Won screen buttons
         const youWonGuideButton = document.getElementById('youWonGuideButton');
         const youWonOptionsButton = document.getElementById('youWonOptionsButton');
         const youWonMenuButton = document.getElementById('youWonMenuButton');
@@ -68,7 +65,6 @@ class MenuManager {
             fullscreenButton.addEventListener('click', () => this.toggleFullscreen());
         }
         
-        // New menu navigation
         if (guideButton) {
             guideButton.addEventListener('click', () => this.showGuide());
         }
@@ -85,7 +81,6 @@ class MenuManager {
             backToMenuFromOptions.addEventListener('click', () => this.showMenu());
         }
         
-        // Game Over screen navigation
         if (gameOverGuideButton) {
             gameOverGuideButton.addEventListener('click', () => this.showGuideFromGameOver());
         }
@@ -98,7 +93,6 @@ class MenuManager {
             gameOverMenuButton.addEventListener('click', () => this.backToMainMenu());
         }
         
-        // You Won screen navigation
         if (youWonGuideButton) {
             youWonGuideButton.addEventListener('click', () => this.showGuideFromYouWon());
         }
@@ -183,12 +177,10 @@ class MenuManager {
         const guidePanel = document.getElementById('guidePanel');
         const optionsPanel = document.getElementById('optionsPanel');
         
-        // Hide all panels
         if (instructionsDiv) instructionsDiv.style.display = 'none';
         if (guidePanel) guidePanel.style.display = 'none';
         if (optionsPanel) optionsPanel.style.display = 'none';
         
-        // Show main menu
         if (menuContainer) {
             menuContainer.style.display = 'flex';
         }
@@ -303,21 +295,29 @@ class MenuManager {
     }
 
     /**
-     * @summary shows game over menu with sound
-     * @description displays game over screen and plays appropriate sound effect
+     * @summary shows game over menu with complete audio shutdown
+     * @description displays game over screen, plays game over sound, then shuts down audio
      */
     showGameOver() {
         this.soundManager.stopBackgroundMusic();
         this.soundManager.playSFX('GAME_OVER');
+        
+        setTimeout(() => {
+            this.soundManager.shutdownAudio();
+        }, 3000);
     }
 
     /**
-     * @summary shows victory menu with sound
-     * @description displays win screen and plays victory sound effect
+     * @summary shows victory menu with complete audio shutdown
+     * @description displays win screen, plays victory sound, then shuts down audio
      */
     showVictory() {
         this.soundManager.stopBackgroundMusic();
         this.soundManager.playSFX('GAME_WON');
+        
+        setTimeout(() => {
+            this.soundManager.shutdownAudio();
+        }, 3000);
     }
 
     /**
@@ -380,13 +380,7 @@ class MenuManager {
      * @summary returns to main menu from any screen
      */
     backToMainMenu() {
-        document.getElementById('gameOverScreen').style.display = 'none';
-        document.getElementById('youWonScreen').style.display = 'none';
-        document.getElementById('startScreen').style.display = 'block';
-        document.querySelector('.menu-container').style.display = 'block';
-        document.getElementById('guidePanel').style.display = 'none';
-        document.getElementById('optionsPanel').style.display = 'none';
-        document.getElementById('gameInstructions').style.display = 'none';
+        window.location.reload();
     }
 
     /**

@@ -1,3 +1,9 @@
+/**
+ * @class Coin
+ * @extends DrawableObjects
+ * @summary collectible coin entity with animated sprite and collision detection
+ * @description handles coin animation, collection state, and visual rendering for player collection
+ */
 class Coin extends DrawableObjects {
     IMAGES_COIN = [
         'assets/images/ui/8_coin/coin_1.png',
@@ -11,6 +17,12 @@ class Coin extends DrawableObjects {
         right: 35
     };
 
+    /**
+     * @summary initializes coin entity with position, dimensions, and animation
+     * @description creates coin with specified coordinates, loads sprites, starts animation loop
+     * @param {number} x - horizontal position coordinate
+     * @param {number} y - vertical position coordinate
+     */
     constructor(x, y) {
         super();
         this.x = x;
@@ -25,6 +37,10 @@ class Coin extends DrawableObjects {
         this.animate();
     }
 
+    /**
+     * @summary starts continuous coin animation cycle
+     * @description animates coin sprite by cycling through frames at 600ms intervals
+     */
     animate() {
         setInterval(() => {
             if (!this.collected) {
@@ -34,14 +50,28 @@ class Coin extends DrawableObjects {
         }, 600);
     }
 
+    /**
+     * @summary marks coin as collected and stops animation
+     * @description sets collected flag to prevent further animation and interaction
+     */
     collect() {
         this.collected = true;
     }
 
+    /**
+     * @summary checks if coin has been collected by player
+     * @description returns current collection state for game logic processing
+     * @returns {boolean} true if coin has been collected, false otherwise
+     */
     isCollected() {
         return this.collected;
     }
 
+    /**
+     * @summary renders yellow collision boundary rectangle for debugging
+     * @description draws collision box around coin when debug mode is enabled
+     * @param {CanvasRenderingContext2D} ctx - canvas rendering context for drawing
+     */
     drawCollision(ctx) {
         if (!this.showCollision) return;
         ctx.beginPath();
@@ -51,6 +81,11 @@ class Coin extends DrawableObjects {
         ctx.stroke();
     }
 
+    /**
+     * @summary enables or disables collision boundary visualization
+     * @description controls whether collision debug rectangle is displayed
+     * @param {boolean} show - true to show collision boundaries, false to hide
+     */
     toggleCollision(show) {
         this.showCollision = show;
     }

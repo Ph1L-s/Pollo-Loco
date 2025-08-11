@@ -59,25 +59,44 @@ class MobileControls {
 
     /**
      * @summary adds touch event handlers to control button
-     * @description binds touchstart, touchend, and touchcancel events to button with key mapping
+     * @description binds touch events for mobile touch controls
      * @param {HTMLElement} button - button element to add events to
      * @param {string} key - key identifier to map touch events to
      */
     addTouchEvents(button, key) {
+        let isPressed = false;
+        
         button.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            this.inputSystem.setKeyPressed(key, true);
+            if (!isPressed) {
+                isPressed = true;
+                this.inputSystem.setKeyPressed(key, true);
+                button.style.transform = 'scale(0.95)';
+            }
         }, { passive: false });
 
         button.addEventListener('touchend', (e) => {
             e.preventDefault();
-            this.inputSystem.setKeyPressed(key, false);
+            if (isPressed) {
+                isPressed = false;
+                this.inputSystem.setKeyPressed(key, false);
+                button.style.transform = 'scale(1)';
+            }
         }, { passive: false });
 
         button.addEventListener('touchcancel', (e) => {
             e.preventDefault();
-            this.inputSystem.setKeyPressed(key, false);
+            if (isPressed) {
+                isPressed = false;
+                this.inputSystem.setKeyPressed(key, false);
+                button.style.transform = 'scale(1)';
+            }
         }, { passive: false });
+        
+        button.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            return false;
+        });
     }
 
     /**

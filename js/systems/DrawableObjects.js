@@ -44,16 +44,95 @@ class DrawableObjects {
     }
 
     /**
-     * @summary preloads array of images into memory cache for fast access
-     * @description creates image objects and stores in cache using path as key
+     * @summary preloads array of images with robust error handling and retry mechanism
+     * @description creates image objects with load/error handlers and retry logic for server reliability
      * @param {Array<string>} arr - array of image file paths to preload
      */
     loadImages(arr) {
         arr.forEach(path => {
-            let img = new Image();
-            img.src = path;
-            this.imageCache[path] = img;
+            this.loadSingleImage(path);
         });
+    }
+
+    /**
+     * @summary loads single image with error handling and retry mechanism
+     * @description implements retry logic for failed image loads, crucial for server deployment
+     * @param {string} path - image file path to load
+     * @param {number} retryCount - current retry attempt (max 3)
+     */
+    loadSingleImage(path, retryCount = 0) {
+        if (this.imageCache[path] && this.imageCache[path].complete && this.imageCache[path].naturalWidth > 0) {
+            return;
+        }
+
+        let img = new Image();
+        
+        img.onload = () => {
+            this.imageCache[path] = img;
+        };
+        
+        img.onerror = () => {
+            console.warn(`Failed to load image: ${path} (attempt ${retryCount + 1})`);
+            
+            if (retryCount < 3) {
+                setTimeout(() => {
+                    this.loadSingleImage(path, retryCount + 1);
+                }, Math.pow(2, retryCount) * 1000);
+            } else {
+                console.error(`Failed to load image after 3 attempts: ${path}`);
+                this.createFallbackImage(path);
+            }
+        };
+        
+        const cacheBuster = this.shouldUseCacheBusting() ? `?t=${Date.now()}` : '';
+        img.src = path + cacheBuster;
+    }
+
+    /**
+     * @summary determines if cache-busting should be used for image loading
+     * @description checks if running on server to add cache-busting parameters
+     * @returns {boolean} true if cache-busting should be applied
+     */
+    shouldUseCacheBusting() {
+        return location.hostname !== 'localhost' && 
+               location.hostname !== '127.0.0.1' && 
+               location.protocol !== 'file:';
+    }
+
+    /**
+     * @summary creates fallback image for failed loads
+     * @description creates colored rectangle as placeholder when image fails to load
+     * @param {string} path - original image path that failed
+     */
+    createFallbackImage(path) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
+        const ctx = canvas.getContext('2d');
+        
+        ctx.fillStyle = '#FF6B6B';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#FFF';
+        ctx.font = '12px Arial';
+        ctx.fillText('IMG', 35, 55);
+        
+        const fallbackImg = new Image();
+        fallbackImg.src = canvas.toDataURL();
+        this.imageCache[path] = fallbackImg;
+    }
+
+    /**
+     * @summary gets image from cache with safety checks
+     * @description retrieves cached image with validation for complete loading
+     * @param {string} path - image path to retrieve
+     * @returns {Image|null} loaded image or null if not available
+     */
+    getImage(path) {
+        const img = this.imageCache[path];
+        if (img && img.complete && img.naturalWidth > 0) {
+            return img;
+        }
+        return null;
     }
 
     /**

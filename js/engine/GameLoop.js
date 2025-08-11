@@ -31,23 +31,32 @@ class GameLoop {
      */
     stop() {
         this.isRunning = false;
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+            this.animationId = null;
+        }
     }
 
     /**
      * @summary main loop iteration handling timing, update phase, and render phase
-     * @description calculates delta time, executes callbacks, schedules next frame
+     * @description calculates delta time, executes callbacks, schedules next frame with Safari optimizations
      */
     loop() {
         if (!this.isRunning) return;
 
         const currentTime = performance.now();
-        const deltaTime = currentTime - this.lastTime;
+        let deltaTime = currentTime - this.lastTime;
+        
+        deltaTime = Math.min(deltaTime, 33.33);
+        
         this.lastTime = currentTime;
 
         this.updateCallbacks.forEach(callback => callback(deltaTime));
-        this.renderCallbacks.forEach(callback => callback(deltaTime));
-
-        requestAnimationFrame(() => this.loop());
+        
+        if (this.renderCallbacks.length > 0) {
+            this.renderCallbacks.forEach(callback => callback(deltaTime));
+        }
+        this.animationId = requestAnimationFrame(() => this.loop());
     }
 
     /**

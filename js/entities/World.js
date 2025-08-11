@@ -367,14 +367,25 @@ class World {
     }
 
     /**
-     * @summary displays you won screen when boss is defeated
-     * @description shows victory screen with you_won image and restart button
+     * @summary displays you won screen when boss is defeated with complete system shutdown
+     * @description shows victory screen, stops all audio/intervals, and shuts down game systems
      */
     showYouWonScreen() {
+        if (window.gameStateManager) {
+            window.gameStateManager.handleVictory();
+        }
+
         if (window.menuManager) {
             window.menuManager.getSoundManager().playSFX('GAME_WON');
             window.menuManager.getSoundManager().playSFX('BOSS_DIE');
+            
+            setTimeout(() => {
+                if (window.menuManager) {
+                    window.menuManager.getSoundManager().shutdownAudio();
+                }
+            }, 2000);
         }
+
         window.gameOver = true;
         window.gameStarted = false;
         this.stopGameLoop();

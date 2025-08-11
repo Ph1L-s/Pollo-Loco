@@ -6,15 +6,11 @@ let gameOver = false;
 let showHitboxes = false;
 let menuManager;
 let mobileControls;
-
-const GAME_OVER_IMAGE = [
-    'assets/images/ui/9_intro_outro_screens/game_over/game_over.png'
-];
-
+let gameStateManager;
 
 /**
- * @summary initializes and starts the main game session
- * @description hides start screen, creates world instance with level 1, and activates game loop
+ * @summary initializes and starts the main game session with complete state management
+ * @description hides start screen, creates world instance, activates game loop with tracking
  */
 function startGame() {
     if (gameStarted) return;
@@ -25,6 +21,10 @@ function startGame() {
     gameOver = false;
     window.gameOver = false;
     window.gameStarted = true;
+
+    if (gameStateManager) {
+        gameStateManager.startGame();
+    }
 
     canvas = document.getElementById('gameCanvas');
     world = new World(canvas, input, createLevel1());
@@ -38,8 +38,8 @@ function startGame() {
 }
 
 /**
- * @summary resets game state and starts new game session
- * @description cleans up current world, stops animations, clears canvas and reinitializes game
+ * @summary resets game state and starts new game session with complete cleanup
+ * @description cleans up all resources, resets state manager, and reinitializes game
  */
 function restartGame() {
     document.getElementById('gameOverScreen').style.display = 'none';
@@ -49,6 +49,10 @@ function restartGame() {
     gameOver = false;
     window.gameOver = false;
     window.gameStarted = false;
+    
+    if (gameStateManager) {
+        gameStateManager.restartGame();
+    }
     
     canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
@@ -67,7 +71,9 @@ function restartGame() {
         window.world = null;
     }
     
-    startGame();
+    setTimeout(() => {
+        startGame();
+    }, 200);
 }
 
 /**
@@ -83,13 +89,17 @@ function showStartScreen() {
 }
 
 /**
- * @summary displays game over screen with centered image and restart option
- * @description stops animations, clears world, loads game over image with aspect ratio scaling
+ * @summary displays game over screen with complete system shutdown
+ * @description stops all audio, intervals, animations, and rendering completely
  */
 function showGameOver() {
     gameOver = true;
     window.gameOver = true;
     window.gameStarted = false;
+    
+    if (gameStateManager) {
+        gameStateManager.handleGameOver();
+    }
     
     if (menuManager) {
         menuManager.showGameOver();
@@ -106,11 +116,32 @@ function showGameOver() {
         window.world = null;
     }
     
-    // Show HTML Game Over screen instead of canvas rendering
     document.getElementById('gameOverScreen').style.display = 'flex';
 }
 
+/**
+ * @summary displays victory screen with complete system shutdown
+ * @description shows you won screen, stops all audio/intervals, and shuts down game systems
+ */
+function showYouWonScreen() {
+    gameOver = true;
+    window.gameOver = true;
+    window.gameStarted = false;
+    
+    if (gameStateManager) {
+        gameStateManager.handleVictory();
+    }
+    
+    if (menuManager) {
+        menuManager.showVictory();
+    }
+    
+    document.getElementById('youWonScreen').style.display = 'flex';
+    document.getElementById('gameCanvas').style.filter = 'blur(5px)';
+}
+
 window.showGameOver = showGameOver;
+window.showYouWonScreen = showYouWonScreen;
 window.gameOver = gameOver;
 
 
@@ -121,6 +152,9 @@ window.gameOver = gameOver;
 document.addEventListener('DOMContentLoaded', function() {
     showStartScreen();
     
+    gameStateManager = new GameStateManager();
+    window.gameStateManager = gameStateManager;
+    
     menuManager = new MenuManager();
     window.menuManager = menuManager;
     
@@ -129,6 +163,21 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const youWonRestartButton = document.getElementById('youWonRestartButton');
     youWonRestartButton.addEventListener('click', restartGame);
+    
+    const soundToggleButton = document.getElementById('soundToggleButton');
+    if (soundToggleButton) {
+        soundToggleButton.addEventListener('click', function() {
+            if (menuManager) {
+                const isMuted = menuManager.getSoundManager().toggleMute();
+                soundToggleButton.textContent = isMuted ? '🔇' : '🔊';
+            }
+        });
+        
+        if (menuManager) {
+            const isInitiallyMuted = menuManager.getSoundManager().isMutedState();
+            soundToggleButton.textContent = isInitiallyMuted ? '🔇' : '🔊';
+        }
+    }
 });
 
 /**

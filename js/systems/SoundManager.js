@@ -19,8 +19,8 @@ class SoundManager {
     }
 
     /**
-     * @summary initializes all audio objects with proper file paths and settings
-     * @description creates Audio objects for background music and all sound effects
+     * @summary initializes all audio objects
+     * @description creates Audio objects for background music and sound effects
      */
     initializeAudio() {
         this.BACKGROUND_MUSIC = new Audio('assets/audio/music/main.mp3');
@@ -30,7 +30,6 @@ class SoundManager {
         this.SFX = {
             COIN_COLLECT: new Audio('assets/audio/sfx/Coin.mp3'),
             BOSS_HIT: new Audio('assets/audio/sfx/boss_chicken_hit.mp3'),
-            // BOTTLE_BREAK: new Audio('assets/audio/sfx/bottle_break.mp3'), // File not available
             BOTTLE_GRAB: new Audio('assets/audio/sfx/bottle_grab.mp3'),
             ENEMY_DIE: new Audio('assets/audio/sfx/enemy_chicken_dies.mp3'),
             GAME_OVER: new Audio('assets/audio/sfx/game_over.mp3'),
@@ -45,6 +44,7 @@ class SoundManager {
 
         this.applySFXVolume();
     }
+
 
     /**
      * @summary loads audio settings from localStorage
@@ -189,8 +189,8 @@ class SoundManager {
     }
 
     /**
-     * @summary stops all audio playback immediately
-     * @description pauses music and resets all audio for game over scenarios
+     * @summary stops all audio playback immediately and completely
+     * @description pauses music, resets all audio, and prevents new sounds for game over scenarios
      */
     stopAllAudio() {
         this.stopBackgroundMusic();
@@ -198,6 +198,48 @@ class SoundManager {
             sound.pause();
             sound.currentTime = 0;
         });
+    }
+
+    /**
+     * @summary completely shuts down audio system for game end
+     * @description stops all sounds, disables new audio, removes event listeners
+     */
+    shutdownAudio() {
+        this.stopAllAudio();
+        this.isShuttingDown = true;
+        
+        Object.values(this.SFX).forEach(sound => {
+            sound.onended = null;
+            sound.onerror = null;
+            sound.onloadeddata = null;
+        });
+        
+        if (this.BACKGROUND_MUSIC) {
+            this.BACKGROUND_MUSIC.onended = null;
+            this.BACKGROUND_MUSIC.onerror = null;
+            this.BACKGROUND_MUSIC.onloadeddata = null;
+        }
+    }
+
+    /**
+     * @summary reactivates audio system after shutdown
+     * @description re-enables audio playback and resets shutdown flag
+     */
+    reactivateAudio() {
+        this.isShuttingDown = false;
+    }
+
+    /**
+     * @summary plays SFX only if audio system is not shut down
+     * @description enhanced playSFX with shutdown check
+     * @param {string} sfxName - name of sound effect from SFX object
+     */
+    playSFXSafe(sfxName) {
+        if (this.isShuttingDown || this.isMuted || !this.SFX[sfxName]) return;
+        
+        const sound = this.SFX[sfxName];
+        sound.currentTime = 0;
+        sound.play().catch(e => console.warn(`SFX ${sfxName} play failed:`, e));
     }
 }
 

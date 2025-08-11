@@ -2,7 +2,12 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="El Pollo Loco">
+    <meta name="format-detection" content="telephone=no">
     <title>Pollo Loco Game</title>
     <link rel="stylesheet" href="css/styles.css">
 
@@ -50,6 +55,7 @@
     <script src="js/systems/SoundManager.js"></script>
     <script src="js/systems/MenuManager.js"></script>
     <script src="js/systems/MobileControls.js"></script>
+    <script src="js/systems/GameStateManager.js"></script>
 
 
     <!-- Levels -->
@@ -70,7 +76,10 @@
     
     <div id="gameContainer">
         <canvas id="gameCanvas" width="720" height="480"></canvas>
-        <button class="fullscreen-button" id="fullscreenButton">⛶</button>
+        <div class="ingame-controls">
+            <button class="control-button" id="soundToggleButton">🔊</button>
+            <button class="control-button" id="fullscreenButton">⛶</button>
+        </div>
         
         <!-- Mobile Touch Controls -->
         <div class="mobile-controls">
@@ -104,6 +113,7 @@
             
             <!-- Options Panel -->
             <div id="optionsPanel" class="game-instructions" style="display: none;">
+                <button class="close-button mobile-close" onclick="document.getElementById('optionsPanel').style.display='none'; document.querySelector('.menu-container').style.display='flex';">✕</button>
                 <h3>Game Options</h3>
                 
                 <div class="volume-container">
@@ -118,6 +128,7 @@
             
             <!-- Game Guide Panel -->
             <div id="guidePanel" class="game-instructions" style="display: none;">
+                <button class="close-button mobile-close" onclick="document.getElementById('guidePanel').style.display='none'; document.querySelector('.menu-container').style.display='flex';">✕</button>
                 <h3>El Pollo Loco Guide</h3>
                 
                 <div class="controls-section">
@@ -135,6 +146,7 @@
             </div>
             
             <div id="gameInstructions" class="game-instructions" style="display: none;">
+                <button class="close-button mobile-close" onclick="document.getElementById('gameInstructions').style.display='none'; document.querySelector('.menu-container').style.display='flex';">✕</button>
                 <h3>How to Play</h3>
                 
                 <div class="controls-section">
@@ -156,8 +168,11 @@
                 <button id="backToMenuButton" class="menu-button">BACK TO MENU</button>
             </div>
         </div>
+        
         <div id="gameOverScreen" style="display: none;">
-            <img src="assets/images/ui/9_intro_outro_screens/game_over/game_over.png" alt="Game Over" style="width: 400px; height: auto;">
+            <div class="game-over-container">
+                <img src="assets/images/ui/9_intro_outro_screens/game_over/game_over.png" alt="Game Over" style="width: 400px; height: auto;">
+            </div>
             <div class="menu-buttons">
                 <button id="restartButton" class="menu-button">RESTART</button>
                 <button id="gameOverGuideButton" class="menu-button">GUIDE</button>
@@ -165,8 +180,11 @@
                 <button id="gameOverMenuButton" class="menu-button">MAIN MENU</button>
             </div>
         </div>
+        
         <div id="youWonScreen" style="display: none;">
-            <img src="assets/images/ui/You won, you lost/you_won.png" alt="You Won!" style="width: 400px; height: auto;">
+            <div class="you-won-container">
+                <img src="assets/images/ui/you_won_you_lost/you_won.png" alt="You Won!" style="width: 400px; height: auto;">
+            </div>
             <div class="menu-buttons">
                 <button id="youWonRestartButton" class="menu-button">RESTART</button>
                 <button id="youWonGuideButton" class="menu-button">GUIDE</button>

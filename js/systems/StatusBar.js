@@ -30,7 +30,7 @@ class StatusBar extends DrawableObjects {
 
     BOTTLE_BAR_IMAGES = [
         'assets/images/ui/7_statusbars/1_statusbar/3_statusbar_bottle/orange/0.png',
-        'assets/images/ui/7_statusbars/1_statusbar/3_statusbar_bottle/Orange/20.png',
+        'assets/images/ui/7_statusbars/1_statusbar/3_statusbar_bottle/orange/20.png',
         'assets/images/ui/7_statusbars/1_statusbar/3_statusbar_bottle/orange/40.png',
         'assets/images/ui/7_statusbars/1_statusbar/3_statusbar_bottle/green/60.png',
         'assets/images/ui/7_statusbars/1_statusbar/3_statusbar_bottle/green/80.png',
@@ -99,6 +99,11 @@ class StatusBar extends DrawableObjects {
         this.coinPercentage = Math.min(100, this.coinPercentage + 20);
     }
 
+    /**
+     * @summary removes coin from collection and updates percentage display
+     * @description decreases coin percentage by 20, minimum 0
+     * @returns {boolean} true if coin was removed, false if no coins available
+     */
     removeCoin() {
         if (this.coinPercentage > 0) {
             this.coinPercentage = Math.max(0, this.coinPercentage - 20);
@@ -114,7 +119,7 @@ class StatusBar extends DrawableObjects {
     addBottle() {
         if (this.bottleCount < 5) {
             this.bottleCount++;
-            this.bottlePercentage = (this.bottleCount / 4) * 100;
+            this.bottlePercentage = (this.bottleCount / 5) * 100;
         }
     }
 
@@ -142,30 +147,91 @@ class StatusBar extends DrawableObjects {
     }
 
     /**
-     * @summary custom rendering method for status bar ui elements
-     * @description draws health, coin, and bottle status bars stacked vertically on screen
+     * @summary custom rendering method for status bar ui elements with robust image handling
+     * @description draws health, coin, and bottle status bars with fallback rendering
      * @param {CanvasRenderingContext2D} ctx - canvas rendering context for drawing
      */
     draw(ctx) {
-        if (this.img && this.img.complete && this.img.naturalWidth > 0) {
-            ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-        }
+        this.drawHealthBar(ctx);
         
-        let coinImagePath = this.COIN_BAR_IMAGES[this.resolveImageIndex(this.coinPercentage)];
-        let coinImg = this.imageCache[coinImagePath];
-        if (coinImg && coinImg.complete && coinImg.naturalWidth > 0) {
-            ctx.drawImage(coinImg, this.x, this.y + 47, this.width, this.height);
-        }
-
-        let bottleImagePath = this.BOTTLE_BAR_IMAGES[this.resolveImageIndex(this.bottlePercentage)];
-        let bottleImg = this.imageCache[bottleImagePath];
-        if (bottleImg && bottleImg.complete && bottleImg.naturalWidth > 0) {
-            ctx.drawImage(bottleImg, this.x, this.y + 94, this.width, this.height);
-        }
+        this.drawCoinBar(ctx);
+        
+        this.drawBottleBar(ctx);
 
         if (this.drawCollision) {
             this.drawCollision(ctx);
         }
+    }
+
+    /**
+     * @summary draws health status bar with fallback
+     * @description renders health bar image or fallback rectangle
+     * @param {CanvasRenderingContext2D} ctx - canvas rendering context
+     */
+    drawHealthBar(ctx) {
+        const img = this.getImage(this.HEALTH_BAR_IMAGES[this.resolveImageIndex(this.healthPercentage)]);
+        if (img) {
+            ctx.drawImage(img, this.x, this.y, this.width, this.height);
+        } else {
+            this.drawFallbackBar(ctx, this.x, this.y, this.healthPercentage, '#FF6B6B', 'HP');
+        }
+    }
+
+    /**
+     * @summary draws coin status bar with fallback
+     * @description renders coin bar image or fallback rectangle
+     * @param {CanvasRenderingContext2D} ctx - canvas rendering context
+     */
+    drawCoinBar(ctx) {
+        const img = this.getImage(this.COIN_BAR_IMAGES[this.resolveImageIndex(this.coinPercentage)]);
+        if (img) {
+            ctx.drawImage(img, this.x, this.y + 47, this.width, this.height);
+        } else {
+            this.drawFallbackBar(ctx, this.x, this.y + 47, this.coinPercentage, '#FFD700', 'COIN');
+        }
+    }
+
+    /**
+     * @summary draws bottle status bar with fallback - always visible
+     * @description renders bottle bar image or fallback rectangle, ensures always displayed
+     * @param {CanvasRenderingContext2D} ctx - canvas rendering context
+     */
+    drawBottleBar(ctx) {
+        const img = this.getImage(this.BOTTLE_BAR_IMAGES[this.resolveImageIndex(this.bottlePercentage)]);
+        if (img) {
+            ctx.drawImage(img, this.x, this.y + 94, this.width, this.height);
+        } else {
+            this.drawFallbackBar(ctx, this.x, this.y + 94, this.bottlePercentage, '#4CAF50', `${this.bottleCount}/5`);
+        }
+    }
+
+    /**
+     * @summary draws fallback status bar when image fails to load
+     * @description creates colored rectangle with text as placeholder
+     * @param {CanvasRenderingContext2D} ctx - canvas context
+     * @param {number} x - x position
+     * @param {number} y - y position  
+     * @param {number} percentage - fill percentage
+     * @param {string} color - bar color
+     * @param {string} text - display text
+     */
+    drawFallbackBar(ctx, x, y, percentage, color, text) {
+        ctx.fillStyle = '#333';
+        ctx.fillRect(x, y, this.width, this.height);
+        
+        ctx.fillStyle = color;
+        const fillWidth = (percentage / 100) * this.width;
+        ctx.fillRect(x, y, fillWidth, this.height);
+        
+        ctx.strokeStyle = '#FFF';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, this.width, this.height);
+        
+        ctx.fillStyle = '#FFF';
+        ctx.font = '12px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(text, x + this.width / 2, y + this.height / 2 + 4);
+        ctx.textAlign = 'left';
     }
 
     /**

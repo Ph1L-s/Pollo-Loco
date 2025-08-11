@@ -46,33 +46,33 @@ class BossEntity extends ObjectEntity {
     ];
 
     IMAGES_WALKING = [
-        'assets/images/sprites/4_enemie_boss_chicken/1_walk/G1.png',
-        'assets/images/sprites/4_enemie_boss_chicken/1_walk/G2.png',
-        'assets/images/sprites/4_enemie_boss_chicken/1_walk/G3.png',
-        'assets/images/sprites/4_enemie_boss_chicken/1_walk/G4.png'
+        'assets/images/sprites/4_enemie_boss_chicken/1_walk/g1.png',
+        'assets/images/sprites/4_enemie_boss_chicken/1_walk/g2.png',
+        'assets/images/sprites/4_enemie_boss_chicken/1_walk/g3.png',
+        'assets/images/sprites/4_enemie_boss_chicken/1_walk/g4.png'
     ];
 
     IMAGES_ATTACK = [
-        'assets/images/sprites/4_enemie_boss_chicken/3_attack/G13.png',
-        'assets/images/sprites/4_enemie_boss_chicken/3_attack/G14.png',
-        'assets/images/sprites/4_enemie_boss_chicken/3_attack/G15.png',
-        'assets/images/sprites/4_enemie_boss_chicken/3_attack/G16.png',
-        'assets/images/sprites/4_enemie_boss_chicken/3_attack/G17.png',
-        'assets/images/sprites/4_enemie_boss_chicken/3_attack/G18.png',
-        'assets/images/sprites/4_enemie_boss_chicken/3_attack/G19.png',
-        'assets/images/sprites/4_enemie_boss_chicken/3_attack/G20.png'
+        'assets/images/sprites/4_enemie_boss_chicken/3_attack/g13.png',
+        'assets/images/sprites/4_enemie_boss_chicken/3_attack/g14.png',
+        'assets/images/sprites/4_enemie_boss_chicken/3_attack/g15.png',
+        'assets/images/sprites/4_enemie_boss_chicken/3_attack/g16.png',
+        'assets/images/sprites/4_enemie_boss_chicken/3_attack/g17.png',
+        'assets/images/sprites/4_enemie_boss_chicken/3_attack/g18.png',
+        'assets/images/sprites/4_enemie_boss_chicken/3_attack/g19.png',
+        'assets/images/sprites/4_enemie_boss_chicken/3_attack/g20.png'
     ];
 
     IMAGES_HURT = [
-        'assets/images/sprites/4_enemie_boss_chicken/4_hurt/G21.png',
-        'assets/images/sprites/4_enemie_boss_chicken/4_hurt/G22.png',
-        'assets/images/sprites/4_enemie_boss_chicken/4_hurt/G23.png'
+        'assets/images/sprites/4_enemie_boss_chicken/4_hurt/g21.png',
+        'assets/images/sprites/4_enemie_boss_chicken/4_hurt/g22.png',
+        'assets/images/sprites/4_enemie_boss_chicken/4_hurt/g23.png'
     ];
 
     IMAGES_DEAD = [
-        'assets/images/sprites/4_enemie_boss_chicken/5_dead/G24.png',
-        'assets/images/sprites/4_enemie_boss_chicken/5_dead/G25.png',
-        'assets/images/sprites/4_enemie_boss_chicken/5_dead/G26.png'
+        'assets/images/sprites/4_enemie_boss_chicken/5_dead/g24.png',
+        'assets/images/sprites/4_enemie_boss_chicken/5_dead/g25.png',
+        'assets/images/sprites/4_enemie_boss_chicken/5_dead/g26.png'
     ];
 
     /**
@@ -164,6 +164,8 @@ class BossEntity extends ObjectEntity {
         if (!this.world || !this.world.character) return;
         
         let player = this.world.character;
+        
+        if (player.isDead()) return;
         let distanceToPlayer = Math.abs(this.x - player.x);
         
         let healthPercentage = this.energy / 100;

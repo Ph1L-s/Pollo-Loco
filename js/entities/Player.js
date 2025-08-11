@@ -162,7 +162,6 @@ class Player extends ObjectEntity {
             
             if (hasInput || this.moving || this.isAboveGround() || this.isHurt()) {
                 this.lastActionTime = Date.now();
-                // Stop idle sound when player becomes active
                 if (window.menuManager) {
                     window.menuManager.getSoundManager().stopSFX('PLAYER_IDLE');
                 }
@@ -264,26 +263,47 @@ class Player extends ObjectEntity {
         }, 1000 / 64);
     }
 
+    /**
+     * @summary applies damage to player with invincibility frames and sound effects
+     * @description reduces player health, updates UI, plays hurt sound with proper timing
+     * @param {number} damage - amount of damage to apply (default: 20)
+     */
     hit(damage = 20) {
         if (this.isDead() || !this.hitTimeStamp()) return;
         
         this.energy -= damage;
         if (this.energy < 0) {
             this.energy = 0;
-        } else {
-            this.lastHit = new Date().getTime();
-            if (window.menuManager) {
-                window.menuManager.getSoundManager().playSFX('PLAYER_HURT');
-            }
         }
-        this.lastHitTimeStamp = new Date().getTime();
         
+        this.lastHit = new Date().getTime();
+        this.lastHitTimeStamp = this.lastHit;
         
-        if (this.energy <= 0) {
+        if (window.menuManager) {
+            window.menuManager.getSoundManager().playSFX('PLAYER_HURT');
+        }
+
+        if (this.world && this.world.statusBar) {
+            this.world.statusBar.setPercentage(this.energy);
         }
     }
 
+    /**
+     * @summary checks if player can take damage based on invincibility timer
+     * @description prevents rapid damage by enforcing 1 second cooldown between hits
+     * @returns {boolean} true if player can be damaged
+     */
     hitTimeStamp() {
-        return new Date().getTime() - this.lastHitTimeStamp > 1000;
+        return new Date().getTime() - this.lastHit > 1000;
+    }
+
+    /**
+     * @summary determines if player is in hurt state for animation
+     * @description checks if player was recently hit and should display hurt animation
+     * @returns {boolean} true if player should show hurt animation
+     */
+    isHurt() {
+        let timepassed = new Date().getTime() - this.lastHit;
+        return timepassed < 1000 && this.energy > 0;
     }
 }
