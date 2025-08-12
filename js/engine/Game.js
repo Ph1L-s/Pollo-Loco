@@ -10,7 +10,7 @@ let gameStateManager;
 
 /**
  * @summary initializes and starts the main game session with complete state management
- * @description hides start screen, creates world instance, activates game loop with tracking
+ * @description hides start screen, preloads images if needed, creates world instance, activates game loop with tracking
  */
 function startGame() {
     if (gameStarted) return;
@@ -24,8 +24,25 @@ function startGame() {
 
     if (gameStateManager) {
         gameStateManager.startGame();
+        
+        if (!window.imagesPreloaded) {
+            gameStateManager.preloadAllGameImages().then(() => {
+                window.imagesPreloaded = true;
+                initializeGameWorld();
+            });
+        } else {
+            initializeGameWorld();
+        }
+    } else {
+        initializeGameWorld();
     }
+}
 
+/**
+ * @summary initializes world and game objects after image preloading
+ * @description creates world instance and starts background music
+ */
+function initializeGameWorld() {
     canvas = document.getElementById('gameCanvas');
     world = new World(canvas, input, createLevel1());
     window.world = world;
@@ -72,7 +89,7 @@ function restartGame() {
     }
     
     setTimeout(() => {
-        startGame();
+        initializeGameWorld();
     }, 200);
 }
 

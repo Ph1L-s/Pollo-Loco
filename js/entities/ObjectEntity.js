@@ -143,6 +143,7 @@ class ObjectEntity extends DrawableObjects {
         if (this.gravityInterval) return;
         
         this.gravityInterval = setInterval(() => {
+            this.lastY = this.y;
             if (this.isAboveGround() || this.speedY > 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;

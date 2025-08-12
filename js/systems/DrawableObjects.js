@@ -44,13 +44,18 @@ class DrawableObjects {
     }
 
     /**
-     * @summary preloads array of images with robust error handling and retry mechanism
-     * @description creates image objects with load/error handlers and retry logic for server reliability
+     * @summary preloads array of images using global cache or fallback
+     * @description uses global image cache first, falls back to individual loading
      * @param {Array<string>} arr - array of image file paths to preload
      */
     loadImages(arr) {
         arr.forEach(path => {
-            this.loadSingleImage(path);
+            const globalImage = window.getGlobalImage ? window.getGlobalImage(path) : null;
+            if (globalImage) {
+                this.imageCache[path] = globalImage;
+            } else {
+                this.loadSingleImage(path);
+            }
         });
     }
 
