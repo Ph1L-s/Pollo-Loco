@@ -1,0 +1,42 @@
+assets/images/sprites/3_enemies_chicken/chicken_normal/Gallina muestra gif.gif -> assets/images/sprites/3_enemies_chicken/chicken_normal/gallina_muestra_gif.gif
+assets/images/sprites/3_enemies_chicken/chicken_normal/Versión Gallinitas.png -> assets/images/sprites/3_enemies_chicken/chicken_normal/versión_gallinitas.png
+assets/images/sprites/3_enemies_chicken/chicken_small/Muestra gif.gif -> assets/images/sprites/3_enemies_chicken/chicken_small/muestra_gif.gif
+assets/images/sprites/3_enemies_chicken/chicken_small/Versión pollitos.png -> assets/images/sprites/3_enemies_chicken/chicken_small/versión_pollitos.png
+assets/images/sprites/4_enemie_boss_chicken/Señora_gallina.png -> assets/images/sprites/4_enemie_boss_chicken/señora_gallina.png
+assets/images/ui/1_editables/1.Jose_Luis-Pepe-Ignacio-Vicente_50_cm.ai -> assets/images/ui/1_editables/1.jose_luis_pepe_ignacio_vicente_50_cm.ai
+assets/images/ui/1_editables/2. Escala_grande.ai -> assets/images/ui/1_editables/2._escala_grande.ai
+assets/images/ui/1_editables/4.Desierto-portada.ai -> assets/images/ui/1_editables/4.desierto_portada.ai
+assets/images/ui/1_editables/Moneda2tamaños.ai -> assets/images/ui/1_editables/moneda2tamaños.ai
+assets/images/ui/1_editables/Sin título-1.ai -> assets/images/ui/1_editables/sin_título_1.ai
+assets/images/ui/7_statusbars/3_icons/Boogaloo (fuente usada en la muestra descargada de Google fonts).zip -> assets/images/ui/7_statusbars/3_icons/boogaloo_(fuente_usada_en_la_muestra_descargada_de_google_fonts).zip
+assets/images/ui/9_intro_outro_screens/game_over/game over!.png -> assets/images/ui/9_intro_outro_screens/game_over/game_over!.png
+assets/images/ui/9_intro_outro_screens/game_over/oh no you lost!.png -> assets/images/ui/9_intro_outro_screens/game_over/oh_no_you_lost!.png
+assets/images/ui/9_intro_outro_screens/game_over/you lost.png -> assets/images/ui/9_intro_outro_screens/game_over/you_lost.png
+assets/images/ui/you_won_you_lost/Game Over.png -> assets/images/ui/you_won_you_lost/game_over.png
+assets/images/ui/you_won_you_lost/Game over A.png -> assets/images/ui/you_won_you_lost/game_over_a.png
+assets/images/ui/you_won_you_lost/You Won B.png -> assets/images/ui/you_won_you_lost/you_won_b.png
+assets/images/ui/you_won_you_lost/You lost b.png -> assets/images/ui/you_won_you_lost/you_lost_b.png
+assets/images/ui/you_won_you_lost/You lost.png -> assets/images/ui/you_won_you_lost/you_lost.png
+assets/images/ui/you_won_you_lost/You win B.png -> assets/images/ui/you_won_you_lost/you_win_b.png
+assets/images/ui/you_won_you_lost/You won A.png -> assets/images/ui/you_won_you_lost/you_won_a.png
+images/sprites/3_enemies_chicken/chicken_normal/Gallina muestra gif.gif -> images/sprites/3_enemies_chicken/chicken_normal/gallina_muestra_gif.gif
+images/sprites/3_enemies_chicken/chicken_normal/Versión Gallinitas.png -> images/sprites/3_enemies_chicken/chicken_normal/versión_gallinitas.png
+images/sprites/3_enemies_chicken/chicken_small/Muestra gif.gif -> images/sprites/3_enemies_chicken/chicken_small/muestra_gif.gif
+images/sprites/3_enemies_chicken/chicken_small/Versión pollitos.png -> images/sprites/3_enemies_chicken/chicken_small/versión_pollitos.png
+images/sprites/4_enemie_boss_chicken/Señora_gallina.png -> images/sprites/4_enemie_boss_chicken/señora_gallina.png
+images/ui/1_editables/1.Jose_Luis-Pepe-Ignacio-Vicente_50_cm.ai -> images/ui/1_editables/1.jose_luis_pepe_ignacio_vicente_50_cm.ai
+images/ui/1_editables/2. Escala_grande.ai -> images/ui/1_editables/2._escala_grande.ai
+images/ui/1_editables/4.Desierto-portada.ai -> images/ui/1_editables/4.desierto_portada.ai
+images/ui/1_editables/Moneda2tamaños.ai -> images/ui/1_editables/moneda2tamaños.ai
+images/ui/1_editables/Sin título-1.ai -> images/ui/1_editables/sin_título_1.ai
+images/ui/7_statusbars/3_icons/Boogaloo (fuente usada en la muestra descargada de Google fonts).zip -> images/ui/7_statusbars/3_icons/boogaloo_(fuente_usada_en_la_muestra_descargada_de_google_fonts).zip
+images/ui/9_intro_outro_screens/game_over/game over!.png -> images/ui/9_intro_outro_screens/game_over/game_over!.png
+images/ui/9_intro_outro_screens/game_over/oh no you lost!.png -> images/ui/9_intro_outro_screens/game_over/oh_no_you_lost!.png
+images/ui/9_intro_outro_screens/game_over/you lost.png -> images/ui/9_intro_outro_screens/game_over/you_lost.png
+images/ui/you_won_you_lost/Game Over.png -> images/ui/you_won_you_lost/game_over.png
+images/ui/you_won_you_lost/Game over A.png -> images/ui/you_won_you_lost/game_over_a.png
+images/ui/you_won_you_lost/You Won B.png -> images/ui/you_won_you_lost/you_won_b.png
+images/ui/you_won_you_lost/You lost b.png -> images/ui/you_won_you_lost/you_lost_b.png
+images/ui/you_won_you_lost/You lost.png -> images/ui/you_won_you_lost/you_lost.png
+images/ui/you_won_you_lost/You win B.png -> images/ui/you_won_you_lost/you_win_b.png
+images/ui/you_won_you_lost/You won A.png -> images/ui/you_won_you_lost/you_won_a.png

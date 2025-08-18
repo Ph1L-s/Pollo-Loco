@@ -428,9 +428,9 @@ class GameStateManager {
                 'assets/images/sprites/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png',
                 'assets/images/ui/8_coin/coin_1.png',
                 'assets/images/ui/8_coin/coin_2.png',
-                'assets/images/backgrounds/air.png',
-                'assets/images/backgrounds/clouds/1.png',
-                'assets/images/backgrounds/clouds/2.png'
+                'assets/images/backgrounds/layers/air.png',
+                'assets/images/backgrounds/layers/4_clouds/1.png',
+                'assets/images/backgrounds/layers/4_clouds/2.png'
             ];
 
             this.preloadImages(gameImages, resolve);
